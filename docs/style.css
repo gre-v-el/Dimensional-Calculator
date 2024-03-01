@@ -21,18 +21,21 @@ footer {
 	text-align: center;
 }
 .container {
+	flex-grow: 1;
 }
 .input-container {
-	max-width: 600px;
+	width: 600px;
 	margin: 20px auto;
 	padding: 20px;
 	border: 1px solid #ccc;
+	box-sizing: border-box;
 }
 .input-field {
 	width: 100%;
 	padding: 10px;
 	font-size: 16px;
 	margin-bottom: 10px;
+	box-sizing: border-box;
 }
 .btn {
 	background-color: #4CAF50;
