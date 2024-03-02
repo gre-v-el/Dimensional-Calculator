@@ -34,9 +34,22 @@ footer {
 	width: 100%;
 	padding: 10px;
 	font-size: 16px;
-	margin-bottom: 10px;
+	margin-bottom: 30px;
 	box-sizing: border-box;
 }
+
+.horizontal {
+	display: flex;
+	justify-content: space-between;
+	column-gap: 10px;
+}
+
+#math-input {
+	display: block;
+	overflow: hidden;
+	flex-grow: 1;
+}
+
 .btn {
 	background-color: #4CAF50;
 	color: #fff;
