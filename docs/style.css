@@ -42,6 +42,7 @@ footer {
 	display: flex;
 	justify-content: space-between;
 	column-gap: 10px;
+	align-items: start;
 }
 
 #math-input {
@@ -63,4 +64,8 @@ footer {
 }
 .output {
 	margin-top: 20px;
+}
+
+#error-message {
+	color: red;
 }
