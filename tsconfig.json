@@ -2,7 +2,8 @@
   "compilerOptions": {
     "strict": true,
     "target": "es5",
-    "outDir": "./docs"
+	"lib": ["es2016", "dom"],
+    "outDir": "./docs",
   },
   "include": [
     "./ts/**/*"
