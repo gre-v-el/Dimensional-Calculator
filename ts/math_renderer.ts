@@ -11,9 +11,15 @@ type Fraction = {
 	numerator: Factor[],
 	denumerator: Factor[],
 	error: string,
+	hard_error: boolean,
 }
 
 function render_fraction(fraction_data: Fraction, output: HTMLDivElement, error: HTMLSpanElement) {
+	output.innerHTML = "";
+	error.textContent = fraction_data.error;
+
+	if(fraction_data.hard_error) return;
+
 	let math = createMathElement("math");
 	math.setAttribute("display", "block");
 	
@@ -34,18 +40,27 @@ function render_fraction(fraction_data: Fraction, output: HTMLDivElement, error:
 	else {
 		math.appendChild(numerator);
 	}
-	output.innerHTML = "";
 	output.appendChild(math);
-	error.textContent = fraction_data.error;
 }
 
 function is_basic_unit(u: string): boolean {
-	if(UNITS.SI.includes(u)) {
-		return true;
+	return UNITS.SI.some((s) => s.symbol == u) ||
+           UNITS.derived.some((d) => d.symbol == u);
+}
+
+function is_unit_good(u: string): boolean {
+	if(is_basic_unit(u) || u == "1") return true;
+
+	for(let p of UNITS.prefixes) {
+		if(u.startsWith(p.symbol)) {
+			let candidate = u.substring(p.symbol.length);
+
+			if(is_basic_unit(candidate)) {
+				return true;
+			}
+		}
 	}
-	else if(UNITS.derived.some((d) => d.symbol == u)) {
-		return true;
-	}
+
 	return false;
 }
 
@@ -60,67 +75,43 @@ function validate_fraction(f: Fraction) {
 
 	for(let a of [f.numerator, f.denumerator]) {
 		for(let u of a) {
-			if(u.value == "") {
-				f.error = "Empty value";
-				u.error = true;
-				return;
-			}
-			if(u.power == "") {
-				f.error = "Empty power";
-				u.error = true;
-				return;
-			}
 			if(isNaN(Number(u.power))) {
 				f.error = "Power is not a number";
 				u.error = true;
-				return;
 			}
 		}
 	}
+	if(f.error.length > 0) return;
 
 	for(let a of [f.numerator, f.denumerator]) {
 		for(let u of a) {
-			let ok = false;
-			if(is_basic_unit(u.value)) {
-				ok = true;
-			}
-			else {
-				for(let p of UNITS.prefixes) {
-					if(u.value.startsWith(p.symbol)) {
-						let candidate = u.value.substring(p.symbol.length);
-
-						if(is_basic_unit(candidate)) {
-							ok = true;
-						}
-					}
-				}
-			}
-
-			if(!ok) {
+			if(!is_unit_good(u.value)) {
 				u.error = true;
 				f.error = "I don't know these units";
 			}
 		}
-	}	
+	}
 }
 
 function parse_to_fraction(input: string): Fraction {
+	input = input.trim();
+	input = input.split(/(\s+)/).join(" ");
+	input += " ";
+
 	let breaks = [" ", "*", "/", "^"];
 
 	let f: Fraction = {
 		numerator: [],
 		denumerator: [],
 		error: "",
+		hard_error: false,
 	};
+
 	let current = f.numerator;
 
 	let in_pow = false;
-
-	input.trim();
-	input = input.split(/(\s+)/).join(" ");
-	input += " ";
-
 	let buf_start = 0;
+
 	for(let i = 0; i < input.length; i ++) {
 		let char = input.charAt(i);
 		
@@ -128,30 +119,38 @@ function parse_to_fraction(input: string): Fraction {
 			if(buf_start == -1) buf_start = i;
 			continue;
 		}
-		if(buf_start != -1 && i > buf_start){
-				let item = input.substring(buf_start, i);
-				buf_start = -1;
 
-				if(in_pow) {
-					in_pow = false;
+		if(i == 0 && char == "/") {
+			f.error = "Put something before the '/', for example a '1'.";
+			f.hard_error = true;
+		}
+		else if(buf_start != -1 && i > buf_start){
+			let item = input.substring(buf_start, i);
+			buf_start = -1;
 
-					if(current.length == 0) {
-						f.error = "Invalid use of '^'";
-						continue;
-					}
+			if(in_pow) {
+				in_pow = false;
 
-					current[current.length - 1].power = item;
+				if(current.length == 0) {
+					f.error = "Invalid use of '^'";
+					continue;
 				}
-				else {
-					current.push({
-						value: item,
-						power: "1",
-						error: false,
-					});
-				}
+
+				current[current.length - 1].power = item;
+			}
+			else {
+				current.push({
+					value: item,
+					power: "1",
+					error: false,
+				});
+			}
 		}
 		if(char == "/") {
-			if(current == f.denumerator) f.error = "Use only a single '/'";
+			if(current == f.denumerator) {
+				f.error = "Use only a single '/'";
+				f.hard_error = true;
+			}
 			current = f.denumerator;
 		}
 		if(char == "^") {

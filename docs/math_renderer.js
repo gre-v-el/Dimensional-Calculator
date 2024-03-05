@@ -2,6 +2,10 @@
 var MathNS = "http://www.w3.org/1998/Math/MathML";
 var createMathElement = function (tag) { return document.createElementNS(MathNS, tag); };
 function render_fraction(fraction_data, output, error) {
+    output.innerHTML = "";
+    error.textContent = fraction_data.error;
+    if (fraction_data.hard_error)
+        return;
     var math = createMathElement("math");
     math.setAttribute("display", "block");
     var numerator = createMathElement("mrow");
@@ -17,16 +21,23 @@ function render_fraction(fraction_data, output, error) {
     else {
         math.appendChild(numerator);
     }
-    output.innerHTML = "";
     output.appendChild(math);
-    error.textContent = fraction_data.error;
 }
 function is_basic_unit(u) {
-    if (UNITS.SI.includes(u)) {
+    return UNITS.SI.some(function (s) { return s.symbol == u; }) ||
+        UNITS.derived.some(function (d) { return d.symbol == u; });
+}
+function is_unit_good(u) {
+    if (is_basic_unit(u) || u == "1")
         return true;
-    }
-    else if (UNITS.derived.some(function (d) { return d.symbol == u; })) {
-        return true;
+    for (var _i = 0, _a = UNITS.prefixes; _i < _a.length; _i++) {
+        var p = _a[_i];
+        if (u.startsWith(p.symbol)) {
+            var candidate = u.substring(p.symbol.length);
+            if (is_basic_unit(candidate)) {
+                return true;
+            }
+        }
     }
     return false;
 }
@@ -42,43 +53,19 @@ function validate_fraction(f) {
         var a = _a[_i];
         for (var _b = 0, a_1 = a; _b < a_1.length; _b++) {
             var u = a_1[_b];
-            if (u.value == "") {
-                f.error = "Empty value";
-                u.error = true;
-                return;
-            }
-            if (u.power == "") {
-                f.error = "Empty power";
-                u.error = true;
-                return;
-            }
             if (isNaN(Number(u.power))) {
                 f.error = "Power is not a number";
                 u.error = true;
-                return;
             }
         }
     }
+    if (f.error.length > 0)
+        return;
     for (var _c = 0, _d = [f.numerator, f.denumerator]; _c < _d.length; _c++) {
         var a = _d[_c];
         for (var _e = 0, a_2 = a; _e < a_2.length; _e++) {
             var u = a_2[_e];
-            var ok = false;
-            if (is_basic_unit(u.value)) {
-                ok = true;
-            }
-            else {
-                for (var _f = 0, _g = UNITS.prefixes; _f < _g.length; _f++) {
-                    var p = _g[_f];
-                    if (u.value.startsWith(p.symbol)) {
-                        var candidate = u.value.substring(p.symbol.length);
-                        if (is_basic_unit(candidate)) {
-                            ok = true;
-                        }
-                    }
-                }
-            }
-            if (!ok) {
+            if (!is_unit_good(u.value)) {
                 u.error = true;
                 f.error = "I don't know these units";
             }
@@ -86,17 +73,18 @@ function validate_fraction(f) {
     }
 }
 function parse_to_fraction(input) {
+    input = input.trim();
+    input = input.split(/(\s+)/).join(" ");
+    input += " ";
     var breaks = [" ", "*", "/", "^"];
     var f = {
         numerator: [],
         denumerator: [],
         error: "",
+        hard_error: false,
     };
     var current = f.numerator;
     var in_pow = false;
-    input.trim();
-    input = input.split(/(\s+)/).join(" ");
-    input += " ";
     var buf_start = 0;
     for (var i = 0; i < input.length; i++) {
         var char = input.charAt(i);
@@ -105,7 +93,11 @@ function parse_to_fraction(input) {
                 buf_start = i;
             continue;
         }
-        if (buf_start != -1 && i > buf_start) {
+        if (i == 0 && char == "/") {
+            f.error = "Put something before the '/', for example a '1'.";
+            f.hard_error = true;
+        }
+        else if (buf_start != -1 && i > buf_start) {
             var item = input.substring(buf_start, i);
             buf_start = -1;
             if (in_pow) {
@@ -125,8 +117,10 @@ function parse_to_fraction(input) {
             }
         }
         if (char == "/") {
-            if (current == f.denumerator)
+            if (current == f.denumerator) {
                 f.error = "Use only a single '/'";
+                f.hard_error = true;
+            }
             current = f.denumerator;
         }
         if (char == "^") {

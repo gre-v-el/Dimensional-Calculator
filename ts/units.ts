@@ -1,5 +1,8 @@
 type Units = {
-	SI: string[],
+	SI: {
+		name: string,
+		symbol: string,
+	}[],
 	derived: {
 		name: string,
 		symbol: string,
@@ -28,7 +31,44 @@ type Units = {
 };
 
 let UNITS: Units = {
-	SI: ["kg", "m", "s", "A", "K", "mol", "cd", "rad", "sr"],
+	SI: [
+		{
+			name: "kilogram",
+			symbol: "kg",
+		},
+		{
+			name: "meter",
+			symbol: "m",
+		},
+		{
+			name: "second",
+			symbol: "s",
+		},
+		{
+			name: "ampere",
+			symbol: "A",
+		},
+		{
+			name: "kelvin",
+			symbol: "K",
+		},
+		{
+			name: "mole",
+			symbol: "mol",
+		},
+		{
+			name: "candela",
+			symbol: "cd",
+		},
+		{
+			name: "radian",
+			symbol: "rd",
+		},
+		{
+			name: "steradian",
+			symbol: "sr",
+		}
+	],
 	derived: [
 		{
 			name: "gram",
