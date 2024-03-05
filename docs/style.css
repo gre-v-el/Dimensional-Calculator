@@ -51,16 +51,21 @@ footer {
 	flex-grow: 1;
 }
 
-.btn {
+#calculate-button {
 	background-color: #4CAF50;
 	color: #fff;
 	padding: 10px 20px;
 	border: none;
 	cursor: pointer;
 	font-size: 16px;
+	transition: opacity 0.2s;
 }
-.btn:hover {
+#calculate-button:not([disabled]):hover {
 	background-color: #45a049;
+}
+#calculate-button[disabled] {
+	opacity: 0.3;
+	cursor: default;
 }
 .output {
 	margin-top: 20px;

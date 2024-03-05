@@ -49,7 +49,7 @@ function is_basic_unit(u: string): boolean {
 }
 
 function is_unit_good(u: string): boolean {
-	if(is_basic_unit(u) || u == "1") return true;
+	if(is_basic_unit(u) || !isNaN(Number(u))) return true;
 
 	for(let p of UNITS.prefixes) {
 		if(u.startsWith(p.symbol)) {

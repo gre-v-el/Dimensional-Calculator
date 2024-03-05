@@ -28,7 +28,7 @@ function is_basic_unit(u) {
         UNITS.derived.some(function (d) { return d.symbol == u; });
 }
 function is_unit_good(u) {
-    if (is_basic_unit(u) || u == "1")
+    if (is_basic_unit(u) || !isNaN(Number(u)))
         return true;
     for (var _i = 0, _a = UNITS.prefixes; _i < _a.length; _i++) {
         var p = _a[_i];
