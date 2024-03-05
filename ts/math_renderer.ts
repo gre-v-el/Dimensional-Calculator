@@ -13,10 +13,7 @@ type Fraction = {
 	error: string,
 }
 
-function render_math(input: string, output: HTMLDivElement, error: HTMLSpanElement) {
-	let fraction_data: Fraction = parse_to_fraction(input);	
-	validate_fraction(fraction_data);
-	
+function render_fraction(fraction_data: Fraction, output: HTMLDivElement, error: HTMLSpanElement) {
 	let math = createMathElement("math");
 	math.setAttribute("display", "block");
 	
@@ -40,6 +37,16 @@ function render_math(input: string, output: HTMLDivElement, error: HTMLSpanEleme
 	output.innerHTML = "";
 	output.appendChild(math);
 	error.textContent = fraction_data.error;
+}
+
+function is_basic_unit(u: string): boolean {
+	if(UNITS.SI.includes(u)) {
+		return true;
+	}
+	else if(UNITS.derived.some((d) => d.symbol == u)) {
+		return true;
+	}
+	return false;
 }
 
 function validate_fraction(f: Fraction) {
@@ -70,6 +77,31 @@ function validate_fraction(f: Fraction) {
 			}
 		}
 	}
+
+	for(let a of [f.numerator, f.denumerator]) {
+		for(let u of a) {
+			let ok = false;
+			if(is_basic_unit(u.value)) {
+				ok = true;
+			}
+			else {
+				for(let p of UNITS.prefixes) {
+					if(u.value.startsWith(p.symbol)) {
+						let candidate = u.value.substring(p.symbol.length);
+
+						if(is_basic_unit(candidate)) {
+							ok = true;
+						}
+					}
+				}
+			}
+
+			if(!ok) {
+				u.error = true;
+				f.error = "I don't know these units";
+			}
+		}
+	}	
 }
 
 function parse_to_fraction(input: string): Fraction {

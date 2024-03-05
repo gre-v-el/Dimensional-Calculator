@@ -1,9 +1,7 @@
 "use strict";
 var MathNS = "http://www.w3.org/1998/Math/MathML";
 var createMathElement = function (tag) { return document.createElementNS(MathNS, tag); };
-function render_math(input, output, error) {
-    var fraction_data = parse_to_fraction(input);
-    validate_fraction(fraction_data);
+function render_fraction(fraction_data, output, error) {
     var math = createMathElement("math");
     math.setAttribute("display", "block");
     var numerator = createMathElement("mrow");
@@ -22,6 +20,15 @@ function render_math(input, output, error) {
     output.innerHTML = "";
     output.appendChild(math);
     error.textContent = fraction_data.error;
+}
+function is_basic_unit(u) {
+    if (UNITS.SI.includes(u)) {
+        return true;
+    }
+    else if (UNITS.derived.some(function (d) { return d.symbol == u; })) {
+        return true;
+    }
+    return false;
 }
 function validate_fraction(f) {
     if (f.numerator.length == 0) {
@@ -49,6 +56,31 @@ function validate_fraction(f) {
                 f.error = "Power is not a number";
                 u.error = true;
                 return;
+            }
+        }
+    }
+    for (var _c = 0, _d = [f.numerator, f.denumerator]; _c < _d.length; _c++) {
+        var a = _d[_c];
+        for (var _e = 0, a_2 = a; _e < a_2.length; _e++) {
+            var u = a_2[_e];
+            var ok = false;
+            if (is_basic_unit(u.value)) {
+                ok = true;
+            }
+            else {
+                for (var _f = 0, _g = UNITS.prefixes; _f < _g.length; _f++) {
+                    var p = _g[_f];
+                    if (u.value.startsWith(p.symbol)) {
+                        var candidate = u.value.substring(p.symbol.length);
+                        if (is_basic_unit(candidate)) {
+                            ok = true;
+                        }
+                    }
+                }
+            }
+            if (!ok) {
+                u.error = true;
+                f.error = "I don't know these units";
             }
         }
     }
