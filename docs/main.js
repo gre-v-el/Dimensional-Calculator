@@ -11,5 +11,8 @@ function handle_input() {
     current_fraction = fraction.error.length > 0 ? undefined : fraction;
     button_element.disabled = current_fraction == undefined;
 }
+function calculate() {
+}
 input_element.addEventListener("keyup", handle_input);
 handle_input();
+button_element.addEventListener("click", calculate);
