@@ -49,6 +49,22 @@ function fract_to_si_unit(fract: Fraction): Unit {
 		}
 	}
 
+	// split prefixes
+	for(let i = 0; i < merged.length; i++) {
+		let u = merged[i];
+		if(!is_basic_unit(u.v)) {
+			for(let p of UNITS.prefixes) {
+				if(u.v.startsWith(p.symbol)) {
+					let candidate = u.v.substring(p.symbol.length);
+					if(is_basic_unit(candidate)) {
+						merged[i] = {v: candidate, p: u.p};
+						mult *= p.multiplier ** u.p;
+					}
+				}
+			}
+		}
+	}
+
 	// change combined units to SI units
 	let si_units: Unit = {
 		multiplier: mult,

@@ -31,6 +31,22 @@ function fract_to_si_unit(fract) {
         var u = units_1[_d];
         _loop_1(u);
     }
+    // split prefixes
+    for (var i = 0; i < merged.length; i++) {
+        var u = merged[i];
+        if (!is_basic_unit(u.v)) {
+            for (var _e = 0, _f = UNITS.prefixes; _e < _f.length; _e++) {
+                var p = _f[_e];
+                if (u.v.startsWith(p.symbol)) {
+                    var candidate = u.v.substring(p.symbol.length);
+                    if (is_basic_unit(candidate)) {
+                        merged[i] = { v: candidate, p: u.p };
+                        mult *= Math.pow(p.multiplier, u.p);
+                    }
+                }
+            }
+        }
+    }
     // change combined units to SI units
     var si_units = {
         multiplier: mult,
@@ -63,8 +79,8 @@ function fract_to_si_unit(fract) {
             }
         }
     };
-    for (var _e = 0, merged_1 = merged; _e < merged_1.length; _e++) {
-        var u = merged_1[_e];
+    for (var _g = 0, merged_1 = merged; _g < merged_1.length; _g++) {
+        var u = merged_1[_g];
         _loop_2(u);
     }
     return si_units;
