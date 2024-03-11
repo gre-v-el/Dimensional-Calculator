@@ -1,4 +1,5 @@
 let input_element = <HTMLInputElement>document.getElementById("input")!;
+let output_element = <HTMLDivElement>document.getElementById("output")!;
 let math_element = <HTMLDivElement>document.getElementById("math-input")!;
 let error_element = <HTMLSpanElement>document.getElementById("error-message")!;
 let button_element = <HTMLButtonElement>document.getElementById("calculate-button")!;
@@ -16,7 +17,7 @@ function handle_input() {
 }
 
 function calculate() {
-	
+	render_unit(fract_to_si_unit(current_fraction!), output_element);
 }
 
 input_element.addEventListener("keyup", handle_input);

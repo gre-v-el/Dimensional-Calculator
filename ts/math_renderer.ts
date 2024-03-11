@@ -1,5 +1,10 @@
 const MathNS = `http://www.w3.org/1998/Math/MathML`;
 const createMathElement = (tag: string) => document.createElementNS(MathNS, tag);
+const createMathElementContent = (tag: string, content: string) => {
+	let e = document.createElementNS(MathNS, tag);
+	e.textContent = content;
+	return e;
+} 
 
 function render_fraction(fraction_data: Fraction, output: HTMLDivElement, error: HTMLSpanElement) {
 	output.innerHTML = "";
@@ -62,4 +67,74 @@ function populate_mrow(mrow: MathMLElement, units: Factor[]) {
 			mrow.appendChild(unit);
 		}
 	}
+}
+
+function render_unit(v: Unit, output: HTMLDivElement) {
+	output.innerHTML = "";
+
+	let math = createMathElement("math");
+	math.setAttribute("display", "block");
+
+	let mrow = createMathElement("mrow");
+	math.appendChild(mrow);
+
+	if(v.multiplier != 1)  {
+		mrow.appendChild(createMathElementContent("mn", v.multiplier.toString()));
+		mrow.appendChild(createMathElementContent("mo", "·"));
+	}
+	
+	let numerator = createMathElement("mrow");
+	let denumerator = createMathElement("mrow");
+
+	for(let k in v) {
+		if(k == "multiplier") continue;
+
+		// @ts-ignore
+		let value = v[k];
+		if(value == 0) continue;
+
+		let item;
+
+		let unit = createMathElementContent("mi", k);
+		
+		if(value != 1 && value != -1) {
+			let power = createMathElementContent("mn", Math.abs(value).toString());
+			item = createMathElement("msup");
+			item.appendChild(unit);
+			item.appendChild(power);
+		}
+		else {
+			item = unit;
+		}
+
+		if(value > 0) {
+			if(numerator.hasChildNodes()) {
+				numerator.appendChild(createMathElementContent("mo", "·"));
+			}
+			numerator.appendChild(item);
+		}
+		else {
+			if(denumerator.hasChildNodes()) {
+				denumerator.appendChild(createMathElementContent("mo", "·"));
+			}
+			denumerator.appendChild(item);
+		}
+
+	}
+
+	if(!numerator.hasChildNodes()) {
+		numerator.appendChild(createMathElementContent("mn", "1"));
+	}
+
+	if(denumerator.hasChildNodes()) {
+		let frac = createMathElement("mfrac");
+		mrow.appendChild(frac);
+		frac.appendChild(numerator);
+		frac.appendChild(denumerator);
+	}
+	else {
+		mrow.appendChild(numerator);
+	}
+	
+	output.appendChild(math);
 }

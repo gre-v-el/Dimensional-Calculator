@@ -1,6 +1,11 @@
 "use strict";
 var MathNS = "http://www.w3.org/1998/Math/MathML";
 var createMathElement = function (tag) { return document.createElementNS(MathNS, tag); };
+var createMathElementContent = function (tag, content) {
+    var e = document.createElementNS(MathNS, tag);
+    e.textContent = content;
+    return e;
+};
 function render_fraction(fraction_data, output, error) {
     output.innerHTML = "";
     error.textContent = fraction_data.error;
@@ -51,4 +56,61 @@ function populate_mrow(mrow, units) {
             mrow.appendChild(unit);
         }
     }
+}
+function render_unit(v, output) {
+    output.innerHTML = "";
+    var math = createMathElement("math");
+    math.setAttribute("display", "block");
+    var mrow = createMathElement("mrow");
+    math.appendChild(mrow);
+    if (v.multiplier != 1) {
+        mrow.appendChild(createMathElementContent("mn", v.multiplier.toString()));
+        mrow.appendChild(createMathElementContent("mo", "·"));
+    }
+    var numerator = createMathElement("mrow");
+    var denumerator = createMathElement("mrow");
+    for (var k in v) {
+        if (k == "multiplier")
+            continue;
+        // @ts-ignore
+        var value = v[k];
+        if (value == 0)
+            continue;
+        var item = void 0;
+        var unit = createMathElementContent("mi", k);
+        if (value != 1 && value != -1) {
+            var power = createMathElementContent("mn", Math.abs(value).toString());
+            item = createMathElement("msup");
+            item.appendChild(unit);
+            item.appendChild(power);
+        }
+        else {
+            item = unit;
+        }
+        if (value > 0) {
+            if (numerator.hasChildNodes()) {
+                numerator.appendChild(createMathElementContent("mo", "·"));
+            }
+            numerator.appendChild(item);
+        }
+        else {
+            if (denumerator.hasChildNodes()) {
+                denumerator.appendChild(createMathElementContent("mo", "·"));
+            }
+            denumerator.appendChild(item);
+        }
+    }
+    if (!numerator.hasChildNodes()) {
+        numerator.appendChild(createMathElementContent("mn", "1"));
+    }
+    if (denumerator.hasChildNodes()) {
+        var frac = createMathElement("mfrac");
+        mrow.appendChild(frac);
+        frac.appendChild(numerator);
+        frac.appendChild(denumerator);
+    }
+    else {
+        mrow.appendChild(numerator);
+    }
+    output.appendChild(math);
 }
