@@ -42,16 +42,33 @@ var UNITS = {
         {
             name: "gram",
             symbol: "g",
+            multiplier: 0.001,
             definition: {
-                multiplier: 0.001,
-                kg: 1
+                kg: 1,
+                m: 0,
+                s: 0,
+                A: 0,
+                K: 0,
+                mol: 0,
+                cd: 0,
+                rad: 0,
+                sr: 0
             }
         },
         {
             name: "hertz",
             symbol: "Hz",
+            multiplier: 1,
             definition: {
-                s: -1
+                s: -1,
+                kg: 0,
+                m: 0,
+                A: 0,
+                K: 0,
+                mol: 0,
+                cd: 0,
+                rad: 0,
+                sr: 0
             },
             alternative: {
                 name: "becquerel",
@@ -61,139 +78,241 @@ var UNITS = {
         {
             name: "newton",
             symbol: "N",
+            multiplier: 1,
             definition: {
                 kg: 1,
                 m: 1,
-                s: -2
+                s: -2,
+                A: 0,
+                K: 0,
+                mol: 0,
+                cd: 0,
+                rad: 0,
+                sr: 0
             }
         },
         {
             name: "pascal",
             symbol: "Pa",
+            multiplier: 1,
             definition: {
                 kg: 1,
                 m: -1,
-                s: -2
+                s: -2,
+                A: 0,
+                K: 0,
+                mol: 0,
+                cd: 0,
+                rad: 0,
+                sr: 0
             }
         },
         {
             name: "joule",
             symbol: "J",
+            multiplier: 1,
             definition: {
                 kg: 1,
                 m: 2,
-                s: -2
+                s: -2,
+                A: 0,
+                K: 0,
+                mol: 0,
+                cd: 0,
+                rad: 0,
+                sr: 0
             }
         },
         {
             name: "watt",
             symbol: "W",
+            multiplier: 1,
             definition: {
                 kg: 1,
                 m: 2,
-                s: -3
+                s: -3,
+                A: 0,
+                K: 0,
+                mol: 0,
+                cd: 0,
+                rad: 0,
+                sr: 0
             }
         },
         {
             name: "coulomb",
             symbol: "C",
+            multiplier: 1,
             definition: {
                 s: 1,
-                A: 1
+                A: 1,
+                kg: 0,
+                m: 0,
+                K: 0,
+                mol: 0,
+                cd: 0,
+                rad: 0,
+                sr: 0
             }
         },
         {
             name: "volt",
             symbol: "V",
+            multiplier: 1,
             definition: {
                 kg: 1,
                 m: 2,
                 s: -3,
-                A: -1
+                A: -1,
+                K: 0,
+                mol: 0,
+                cd: 0,
+                rad: 0,
+                sr: 0
             }
         },
         {
             name: "farad",
             symbol: "F",
+            multiplier: 1,
             definition: {
                 kg: -1,
                 m: -2,
                 s: 4,
-                A: 2
+                A: 2,
+                K: 0,
+                mol: 0,
+                cd: 0,
+                rad: 0,
+                sr: 0
             }
         },
         {
             name: "ohm",
             symbol: "Ω",
+            multiplier: 1,
             definition: {
                 kg: 1,
                 m: 2,
                 s: -3,
-                A: -2
+                A: -2,
+                K: 0,
+                mol: 0,
+                cd: 0,
+                rad: 0,
+                sr: 0
             }
         },
         {
             name: "siemens",
             symbol: "S",
+            multiplier: 1,
             definition: {
                 kg: -1,
                 m: -2,
                 s: 3,
-                A: 2
+                A: 2,
+                K: 0,
+                mol: 0,
+                cd: 0,
+                rad: 0,
+                sr: 0
             }
         },
         {
             name: "weber",
             symbol: "Wb",
+            multiplier: 1,
             definition: {
                 kg: 1,
                 m: 2,
                 s: -2,
-                A: -1
+                A: -1,
+                K: 0,
+                mol: 0,
+                cd: 0,
+                rad: 0,
+                sr: 0
             }
         },
         {
             name: "tesla",
             symbol: "T",
+            multiplier: 1,
             definition: {
                 kg: 1,
                 s: -2,
-                A: -1
+                A: -1,
+                m: 0,
+                K: 0,
+                mol: 0,
+                cd: 0,
+                rad: 0,
+                sr: 0
             }
         },
         {
             name: "henry",
             symbol: "H",
+            multiplier: 1,
             definition: {
                 kg: 1,
                 m: 2,
                 s: -2,
-                A: -2
+                A: -2,
+                K: 0,
+                mol: 0,
+                cd: 0,
+                rad: 0,
+                sr: 0
             }
         },
         {
             name: "lumen",
             symbol: "lm",
+            multiplier: 1,
             definition: {
                 cd: 1,
-                sr: 1
+                sr: 1,
+                kg: 0,
+                m: 0,
+                s: 0,
+                A: 0,
+                K: 0,
+                mol: 0,
+                rad: 0
             }
         },
         {
             name: "lux",
             symbol: "lx",
+            multiplier: 1,
             definition: {
                 m: -2,
                 cd: 1,
-                sr: 1
+                sr: 1,
+                kg: 0,
+                s: 0,
+                A: 0,
+                K: 0,
+                mol: 0,
+                rad: 0
             }
         },
         {
             name: "gray",
             symbol: "Gy",
+            multiplier: 1,
             definition: {
                 m: 2,
-                s: -2
+                s: -2,
+                kg: 0,
+                A: 0,
+                K: 0,
+                mol: 0,
+                cd: 0,
+                rad: 0,
+                sr: 0
             },
             "alternative": {
                 name: "sievert",
@@ -203,9 +322,17 @@ var UNITS = {
         {
             name: "katal",
             symbol: "kat",
+            multiplier: 1,
             definition: {
                 s: -1,
-                mol: 1
+                mol: 1,
+                kg: 0,
+                m: 0,
+                A: 0,
+                K: 0,
+                cd: 0,
+                rad: 0,
+                sr: 0
             }
         }
     ],

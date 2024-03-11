@@ -86,11 +86,36 @@ function render_unit(v: Unit, output: HTMLDivElement) {
 	let numerator = createMathElement("mrow");
 	let denumerator = createMathElement("mrow");
 
-	for(let k in v) {
-		if(k == "multiplier") continue;
-
+	for(let c of v.compounds) {
+		let item;
+		
+		if(c.power == 1 || c.power == -1) {
+			item = createMathElementContent("mi", c.name);
+		}
+		else {
+			item = createMathElement("msup");
+			let unit = createMathElementContent("mi", c.name);
+			let power = createMathElementContent("mn", Math.abs(c.power).toString());
+			item.appendChild(unit);
+			item.appendChild(power);
+		}
+		
+		if(c.power > 0) {
+			if(numerator.hasChildNodes()) {
+				numerator.appendChild(createMathElementContent("mo", "·"));
+			}
+			numerator.appendChild(item);
+		}
+		else {
+			if(denumerator.hasChildNodes()) {
+				denumerator.appendChild(createMathElementContent("mo", "·"));
+			}
+			denumerator.appendChild(item);
+		}
+	}
+	for(let k in v.definition) {
 		// @ts-ignore
-		let value = v[k];
+		let value = v.definition[k];
 		if(value == 0) continue;
 
 		let item;

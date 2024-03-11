@@ -34,29 +34,31 @@ function fract_to_si_unit(fract) {
     // change combined units to SI units
     var si_units = {
         multiplier: mult,
-        kg: 0,
-        m: 0,
-        s: 0,
-        A: 0,
-        K: 0,
-        mol: 0,
-        cd: 0,
-        rad: 0,
-        sr: 0,
+        definition: {
+            kg: 0,
+            m: 0,
+            s: 0,
+            A: 0,
+            K: 0,
+            mol: 0,
+            cd: 0,
+            rad: 0,
+            sr: 0,
+        },
         compounds: [],
     };
     var _loop_2 = function (u) {
         var found = UNITS.SI.find(function (s) { return s.symbol == u.v; });
         if (found) {
             // @ts-ignore
-            si_units[found.symbol] += u.p;
+            si_units.definition[found.symbol] += u.p;
         }
         else {
             var derived = UNITS.derived.find(function (d) { return d.symbol == u.v; });
             if (derived) {
                 for (var k in derived.definition) {
                     // @ts-ignore
-                    si_units[k] += derived.definition[k] * u.p;
+                    si_units.definition[k] += derived.definition[k] * u.p;
                 }
             }
         }
@@ -66,4 +68,101 @@ function fract_to_si_unit(fract) {
         _loop_2(u);
     }
     return si_units;
+}
+function heuristic(unit) {
+    var sum = 0;
+    for (var k in unit) {
+        // @ts-ignore
+        sum += Math.abs(unit[k]);
+    }
+    return sum;
+}
+function divide(u1, u2) {
+    var result = {
+        kg: 0,
+        m: 0,
+        s: 0,
+        A: 0,
+        K: 0,
+        mol: 0,
+        cd: 0,
+        rad: 0,
+        sr: 0,
+    };
+    for (var k in u1) {
+        // @ts-ignore
+        result[k] = u1[k] - u2[k];
+    }
+    return result;
+}
+function multiply(u1, u2) {
+    var result = {
+        kg: 0,
+        m: 0,
+        s: 0,
+        A: 0,
+        K: 0,
+        mol: 0,
+        cd: 0,
+        rad: 0,
+        sr: 0,
+    };
+    for (var k in u1) {
+        // @ts-ignore
+        result[k] = u1[k] + u2[k];
+    }
+    return result;
+}
+function reduce_unit(unit) {
+    var _loop_3 = function () {
+        var improved = false;
+        var best;
+        var mult = true;
+        var best_dist = heuristic(unit.definition);
+        for (var _i = 0, _a = UNITS.derived; _i < _a.length; _i++) {
+            var compound = _a[_i];
+            var d = divide(unit.definition, compound.definition);
+            var m = multiply(unit.definition, compound.definition);
+            if (heuristic(d) < best_dist) {
+                best = compound;
+                best_dist = heuristic(d);
+                mult = false;
+            }
+            if (heuristic(m) < best_dist) {
+                best = compound;
+                best_dist = heuristic(m);
+                mult = true;
+            }
+        }
+        if (best) {
+            improved = true;
+            if (mult) {
+                unit.definition = multiply(unit.definition, best.definition);
+                var found = unit.compounds.find(function (c) { return c.name == best.symbol; });
+                if (found) {
+                    found.power -= 1;
+                }
+                else {
+                    unit.compounds.push({ name: best.symbol, power: -1 });
+                }
+            }
+            else {
+                unit.definition = divide(unit.definition, best.definition);
+                var found = unit.compounds.find(function (c) { return c.name == best.symbol; });
+                if (found) {
+                    found.power += 1;
+                }
+                else {
+                    unit.compounds.push({ name: best.symbol, power: 1 });
+                }
+            }
+        }
+        if (!improved)
+            return "break";
+    };
+    while (true) {
+        var state_1 = _loop_3();
+        if (state_1 === "break")
+            break;
+    }
 }

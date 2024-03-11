@@ -69,11 +69,35 @@ function render_unit(v, output) {
     }
     var numerator = createMathElement("mrow");
     var denumerator = createMathElement("mrow");
-    for (var k in v) {
-        if (k == "multiplier")
-            continue;
+    for (var _i = 0, _a = v.compounds; _i < _a.length; _i++) {
+        var c = _a[_i];
+        var item = void 0;
+        if (c.power == 1 || c.power == -1) {
+            item = createMathElementContent("mi", c.name);
+        }
+        else {
+            item = createMathElement("msup");
+            var unit = createMathElementContent("mi", c.name);
+            var power = createMathElementContent("mn", Math.abs(c.power).toString());
+            item.appendChild(unit);
+            item.appendChild(power);
+        }
+        if (c.power > 0) {
+            if (numerator.hasChildNodes()) {
+                numerator.appendChild(createMathElementContent("mo", "·"));
+            }
+            numerator.appendChild(item);
+        }
+        else {
+            if (denumerator.hasChildNodes()) {
+                denumerator.appendChild(createMathElementContent("mo", "·"));
+            }
+            denumerator.appendChild(item);
+        }
+    }
+    for (var k in v.definition) {
         // @ts-ignore
-        var value = v[k];
+        var value = v.definition[k];
         if (value == 0)
             continue;
         var item = void 0;
