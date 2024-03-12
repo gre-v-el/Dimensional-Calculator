@@ -1,17 +1,3 @@
-type Factor = {
-	value: string,
-	power: string,
-	error: boolean,
-}
-
-type Fraction = {
-	numerator: Factor[],
-	denumerator: Factor[],
-	error: string,
-	hard_error: boolean,
-}
-
-
 function is_basic_unit(u: string): boolean {
 	return UNITS.SI.some((s) => s.symbol == u) ||
            UNITS.derived.some((d) => d.symbol == u);
@@ -95,6 +81,9 @@ function parse_to_fraction(input: string): Fraction {
 		}
 		else if(buf_start != -1 && i > buf_start){
 			let item = input.substring(buf_start, i);
+			if(item == "Ohm" || item == "ohm") {
+				item = "Ω";
+			}
 			buf_start = -1;
 
 			if(in_pow) {

@@ -41,7 +41,7 @@ function fract_to_si_unit(fract) {
                     var candidate = u.v.substring(p.symbol.length);
                     if (is_basic_unit(candidate)) {
                         merged[i] = { v: candidate, p: u.p };
-                        mult *= Math.pow(p.multiplier, u.p);
+                        mult *= Math.pow(10, (p.exponent * u.p));
                     }
                 }
             }
@@ -87,45 +87,57 @@ function fract_to_si_unit(fract) {
 }
 function heuristic(unit) {
     var sum = 0;
-    for (var k in unit) {
+    for (var k in unit.definition) {
         // @ts-ignore
-        sum += Math.abs(unit[k]);
+        sum += Math.abs(unit.definition[k]);
+    }
+    for (var _i = 0, _a = unit.compounds; _i < _a.length; _i++) {
+        var c = _a[_i];
+        sum += Math.abs(c.power);
     }
     return sum;
 }
 function divide(u1, u2) {
     var result = {
-        kg: 0,
-        m: 0,
-        s: 0,
-        A: 0,
-        K: 0,
-        mol: 0,
-        cd: 0,
-        rad: 0,
-        sr: 0,
+        multiplier: u1.multiplier / u2.multiplier,
+        definition: {
+            kg: 0,
+            m: 0,
+            s: 0,
+            A: 0,
+            K: 0,
+            mol: 0,
+            cd: 0,
+            rad: 0,
+            sr: 0,
+        },
+        compounds: u1.compounds.slice(),
     };
-    for (var k in u1) {
+    for (var k in u1.definition) {
         // @ts-ignore
-        result[k] = u1[k] - u2[k];
+        result.definition[k] = u1.definition[k] - u2.definition[k];
     }
     return result;
 }
 function multiply(u1, u2) {
     var result = {
-        kg: 0,
-        m: 0,
-        s: 0,
-        A: 0,
-        K: 0,
-        mol: 0,
-        cd: 0,
-        rad: 0,
-        sr: 0,
+        multiplier: u1.multiplier * u2.multiplier,
+        definition: {
+            kg: 0,
+            m: 0,
+            s: 0,
+            A: 0,
+            K: 0,
+            mol: 0,
+            cd: 0,
+            rad: 0,
+            sr: 0,
+        },
+        compounds: u1.compounds.slice(),
     };
-    for (var k in u1) {
+    for (var k in u1.definition) {
         // @ts-ignore
-        result[k] = u1[k] + u2[k];
+        result.definition[k] = u1.definition[k] + u2.definition[k];
     }
     return result;
 }
@@ -134,11 +146,11 @@ function reduce_unit(unit) {
         var improved = false;
         var best;
         var mult = true;
-        var best_dist = heuristic(unit.definition);
+        var best_dist = heuristic(unit);
         for (var _i = 0, _a = UNITS.derived; _i < _a.length; _i++) {
             var compound = _a[_i];
-            var d = divide(unit.definition, compound.definition);
-            var m = multiply(unit.definition, compound.definition);
+            var d = divide(unit, compound);
+            var m = multiply(unit, compound);
             if (heuristic(d) < best_dist) {
                 best = compound;
                 best_dist = heuristic(d);
@@ -153,8 +165,9 @@ function reduce_unit(unit) {
         if (best) {
             improved = true;
             if (mult) {
-                unit.definition = multiply(unit.definition, best.definition);
+                unit = multiply(unit, best);
                 var found = unit.compounds.find(function (c) { return c.name == best.symbol; });
+                unit.multiplier *= best.multiplier;
                 if (found) {
                     found.power -= 1;
                 }
@@ -163,8 +176,9 @@ function reduce_unit(unit) {
                 }
             }
             else {
-                unit.definition = divide(unit.definition, best.definition);
+                unit = divide(unit, best);
                 var found = unit.compounds.find(function (c) { return c.name == best.symbol; });
+                unit.multiplier /= best.multiplier;
                 if (found) {
                     found.power += 1;
                 }
@@ -181,4 +195,5 @@ function reduce_unit(unit) {
         if (state_1 === "break")
             break;
     }
+    return unit;
 }

@@ -57,6 +57,7 @@ function populate_mrow(mrow, units) {
         }
     }
 }
+// TODO: should construct a Fraction and call render_fraction()
 function render_unit(v, output) {
     output.innerHTML = "";
     var math = createMathElement("math");

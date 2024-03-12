@@ -1,25 +1,3 @@
-type SiDefinition = {
-	kg: number,
-	m: number,
-	s: number,
-	A: number,
-	K: number,
-	mol: number,
-	cd: number,
-	rad: number,
-	sr: number,
-}
-
-
-type Unit = {
-	multiplier: number,
-	definition: SiDefinition,
-	compounds: {
-		name: string, 
-		power: number
-	}[]
-}
-
 function fract_to_si_unit(fract: Fraction): Unit {
 	let mult = 1;
 	let units: {v: string, p: number}[] = [];
@@ -58,7 +36,7 @@ function fract_to_si_unit(fract: Fraction): Unit {
 					let candidate = u.v.substring(p.symbol.length);
 					if(is_basic_unit(candidate)) {
 						merged[i] = {v: candidate, p: u.p};
-						mult *= p.multiplier ** u.p;
+						mult *= 10 ** (p.exponent * u.p);
 					}
 				}
 			}
@@ -102,63 +80,78 @@ function fract_to_si_unit(fract: Fraction): Unit {
 	return si_units;
 }
 
-function heuristic(unit: SiDefinition): number {
+function heuristic(unit: Unit): number {
 	let sum = 0;
-	for(let k in unit) {
+	for(let k in unit.definition) {
 		// @ts-ignore
-		sum += Math.abs(unit[k]);
+		sum += Math.abs(unit.definition[k]);
+	}
+	for(let c of unit.compounds) {
+		sum += Math.abs(c.power);
 	}
 	return sum;
 }
 
-function divide(u1: SiDefinition, u2: SiDefinition): SiDefinition {
-	let result: SiDefinition = {
-		kg: 0,
-		m: 0,
-		s: 0,
-		A: 0,
-		K: 0,
-		mol: 0,
-		cd: 0,
-		rad: 0,
-		sr: 0,
+function divide(u1: Unit, u2: DerivedUnit): Unit {
+	let result: Unit = {
+		multiplier: u1.multiplier / u2.multiplier,
+		definition: {
+			kg: 0,
+			m: 0,
+			s: 0,
+			A: 0,
+			K: 0,
+			mol: 0,
+			cd: 0,
+			rad: 0,
+			sr: 0,
+		},
+		compounds: u1.compounds.slice(),
 	};
-	for(let k in u1) {
+
+	for(let k in u1.definition) {
 		// @ts-ignore
-		result[k] = u1[k] - u2[k];
+		result.definition[k] = u1.definition[k] - u2.definition[k];
 	}
+
 	return result;
 }
 
-function multiply(u1: SiDefinition, u2: SiDefinition): SiDefinition {
-	let result: SiDefinition = {
-		kg: 0,
-		m: 0,
-		s: 0,
-		A: 0,
-		K: 0,
-		mol: 0,
-		cd: 0,
-		rad: 0,
-		sr: 0,
+function multiply(u1: Unit, u2: DerivedUnit): Unit {
+	let result: Unit = {
+		multiplier: u1.multiplier * u2.multiplier,
+		definition: {
+			kg: 0,
+			m: 0,
+			s: 0,
+			A: 0,
+			K: 0,
+			mol: 0,
+			cd: 0,
+			rad: 0,
+			sr: 0,
+		},
+		compounds: u1.compounds.slice(),
 	};
-	for(let k in u1) {
+
+	for(let k in u1.definition) {
 		// @ts-ignore
-		result[k] = u1[k] + u2[k];
+		result.definition[k] = u1.definition[k] + u2.definition[k];
 	}
+
 	return result;
 }
 
-function reduce_unit(unit: Unit) {
+function reduce_unit(unit: Unit): Unit {
 	while(true) {
 		let improved = false;
 		let best: DerivedUnit | undefined;
 		let mult = true;
-		let best_dist = heuristic(unit.definition);
+		let best_dist = heuristic(unit);
 
 		for(let compound of UNITS.derived) {
-			let d = divide(unit.definition, compound.definition);
-			let m = multiply(unit.definition, compound.definition);
+			let d = divide(unit, compound);
+			let m = multiply(unit, compound);
 			if(heuristic(d) < best_dist) {
 				best = compound;
 				best_dist = heuristic(d);
@@ -174,8 +167,9 @@ function reduce_unit(unit: Unit) {
 		if(best) {
 			improved = true;
 			if(mult) {
-				unit.definition = multiply(unit.definition, best.definition);
+				unit = multiply(unit, best);
 				let found = unit.compounds.find((c) => c.name == best!.symbol);
+				unit.multiplier *= best.multiplier;
 				if(found) {
 					found.power -= 1;
 				}
@@ -184,8 +178,9 @@ function reduce_unit(unit: Unit) {
 				}
 			}
 			else {
-				unit.definition = divide(unit.definition, best.definition);
+				unit = divide(unit, best);
 				let found = unit.compounds.find((c) => c.name == best!.symbol);
+				unit.multiplier /= best.multiplier;
 				if(found) {
 					found.power += 1;
 				}
@@ -196,4 +191,6 @@ function reduce_unit(unit: Unit) {
 		}
 		if(!improved) break;
 	}
+
+	return unit;
 }

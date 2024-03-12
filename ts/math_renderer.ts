@@ -69,6 +69,7 @@ function populate_mrow(mrow: MathMLElement, units: Factor[]) {
 	}
 }
 
+// TODO: should construct a Fraction and call render_fraction()
 function render_unit(v: Unit, output: HTMLDivElement) {
 	output.innerHTML = "";
 

@@ -75,6 +75,9 @@ function parse_to_fraction(input) {
         }
         else if (buf_start != -1 && i > buf_start) {
             var item = input.substring(buf_start, i);
+            if (item == "Ohm" || item == "ohm") {
+                item = "Ω";
+            }
             buf_start = -1;
             if (in_pow) {
                 in_pow = false;
