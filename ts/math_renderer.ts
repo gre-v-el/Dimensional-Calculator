@@ -6,15 +6,11 @@ const createMathElementContent = (tag: string, content: string) => {
 	return e;
 } 
 
-function render_fraction(fraction_data: Fraction, output: HTMLDivElement, error: HTMLSpanElement) {
-	output.innerHTML = "";
-	error.textContent = fraction_data.error;
+function render_fraction(fraction_data: Fraction, output: MathMLElement, error?: HTMLSpanElement) {
+	if(fraction_data.error.length > 0) error!.textContent = fraction_data.error;
 
 	if(fraction_data.hard_error) return;
 
-	let math = createMathElement("math");
-	math.setAttribute("display", "block");
-	
 	let numerator = createMathElement("mrow");
 	populate_mrow(numerator, fraction_data.numerator);
 	
@@ -27,38 +23,29 @@ function render_fraction(fraction_data: Fraction, output: HTMLDivElement, error:
 		frac.appendChild(numerator);
 		frac.appendChild(denumenator);
 		
-		math.appendChild(frac);
+		output.appendChild(frac);
 	}
 	else {
-		math.appendChild(numerator);
+		output.appendChild(numerator);
 	}
-	output.appendChild(math);
 }
 
 
 function populate_mrow(mrow: MathMLElement, units: Factor[]) {
-	for(let i = 0; i < units.length; i ++) {
-		let u = units[i];
-		
+	for(let u of units) {
 		if(mrow.children.length > 0) {
-			let multiplied = createMathElement("mo");
-			multiplied.textContent = "·";
+			let multiplied = createMathElementContent("mo", "·");
 			mrow.appendChild(multiplied);
 		}
 		if(u.power == "1") {
-			let unit = createMathElement("mi");
-			unit.textContent = u.value;
-
+			let unit = createMathElementContent("mi", u.value);
 			if(u.error) unit.setAttribute("style", "color: red;");
-
 			mrow.appendChild(unit);
 		}
 		else {
 			let unit = createMathElement("msup");
-			let base = createMathElement("mi");
-			base.textContent = u.value;
-			let power = createMathElement("mn");
-			power.textContent = u.power;
+			let base = createMathElementContent("mi", u.value);
+			let power = createMathElementContent("mn", u.power);
 			unit.appendChild(base);
 			unit.appendChild(power);
 
@@ -69,98 +56,44 @@ function populate_mrow(mrow: MathMLElement, units: Factor[]) {
 	}
 }
 
-// TODO: should construct a Fraction and call render_fraction()
-function render_unit(v: Unit, output: HTMLDivElement) {
-	output.innerHTML = "";
-
-	let math = createMathElement("math");
-	math.setAttribute("display", "block");
-
-	let mrow = createMathElement("mrow");
-	math.appendChild(mrow);
-
-	if(v.multiplier != 1)  {
-		mrow.appendChild(createMathElementContent("mn", v.multiplier.toString()));
-		mrow.appendChild(createMathElementContent("mo", "·"));
+function render_unit(v: Unit, output: MathMLElement) {
+	if(v.multiplier != 1) {
+		output.appendChild(createMathElementContent("mn", v.multiplier.toString()));
+		output.appendChild(createMathElementContent("mo", "·"));
 	}
 	
-	let numerator = createMathElement("mrow");
-	let denumerator = createMathElement("mrow");
+	let f: Fraction = {
+		numerator: [],
+		denumerator: [],
+		error: "",
+		hard_error: false,
+	};
 
-	for(let c of v.compounds) {
-		let item;
-		
-		if(c.power == 1 || c.power == -1) {
-			item = createMathElementContent("mi", c.name);
-		}
-		else {
-			item = createMathElement("msup");
-			let unit = createMathElementContent("mi", c.name);
-			let power = createMathElementContent("mn", Math.abs(c.power).toString());
-			item.appendChild(unit);
-			item.appendChild(power);
-		}
-		
-		if(c.power > 0) {
-			if(numerator.hasChildNodes()) {
-				numerator.appendChild(createMathElementContent("mo", "·"));
-			}
-			numerator.appendChild(item);
-		}
-		else {
-			if(denumerator.hasChildNodes()) {
-				denumerator.appendChild(createMathElementContent("mo", "·"));
-			}
-			denumerator.appendChild(item);
-		}
-	}
 	for(let k in v.definition) {
 		// @ts-ignore
 		let value = v.definition[k];
 		if(value == 0) continue;
 
-		let item;
+		let factor: Factor = {
+			value: k,
+			power: Math.abs(value).toString(),
+			error: false,
+		};
 
-		let unit = createMathElementContent("mi", k);
-		
-		if(value != 1 && value != -1) {
-			let power = createMathElementContent("mn", Math.abs(value).toString());
-			item = createMathElement("msup");
-			item.appendChild(unit);
-			item.appendChild(power);
-		}
-		else {
-			item = unit;
-		}
-
-		if(value > 0) {
-			if(numerator.hasChildNodes()) {
-				numerator.appendChild(createMathElementContent("mo", "·"));
-			}
-			numerator.appendChild(item);
-		}
-		else {
-			if(denumerator.hasChildNodes()) {
-				denumerator.appendChild(createMathElementContent("mo", "·"));
-			}
-			denumerator.appendChild(item);
-		}
-
+		if(value > 0) f.numerator.push(factor);
+		else f.denumerator.push(factor);
 	}
 
-	if(!numerator.hasChildNodes()) {
-		numerator.appendChild(createMathElementContent("mn", "1"));
+	for(let c of v.compounds) {
+		let factor: Factor = {
+			value: c.name,
+			power: Math.abs(c.power).toString(),
+			error: false,
+		};
+
+		if(c.power > 0) f.numerator.push(factor);
+		else f.denumerator.push(factor);
 	}
 
-	if(denumerator.hasChildNodes()) {
-		let frac = createMathElement("mfrac");
-		mrow.appendChild(frac);
-		frac.appendChild(numerator);
-		frac.appendChild(denumerator);
-	}
-	else {
-		mrow.appendChild(numerator);
-	}
-	
-	output.appendChild(math);
+	render_fraction(f, output);
 }

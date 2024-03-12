@@ -37,20 +37,6 @@ footer {
 	margin-bottom: 30px;
 	box-sizing: border-box;
 }
-
-.horizontal {
-	display: flex;
-	justify-content: space-between;
-	column-gap: 10px;
-	align-items: start;
-}
-
-#math-input {
-	display: block;
-	overflow: hidden;
-	flex-grow: 1;
-}
-
 #calculate-button {
 	background-color: #4CAF50;
 	color: #fff;

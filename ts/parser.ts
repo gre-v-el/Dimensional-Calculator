@@ -75,16 +75,10 @@ function parse_to_fraction(input: string): Fraction {
 			continue;
 		}
 
-		if(i == 0 && char == "/") {
-			f.error = "Put something before the '/', for example a '1'.";
-			f.hard_error = true;
-		}
-		else if(buf_start != -1 && i > buf_start){
+		if(buf_start != -1 && i > buf_start) {
 			let item = input.substring(buf_start, i);
-			if(item == "Ohm" || item == "ohm") {
-				item = "Ω";
-			}
 			buf_start = -1;
+			if(item == "Ohm" || item == "ohm") item = "Ω";
 
 			if(in_pow) {
 				in_pow = false;
@@ -105,13 +99,22 @@ function parse_to_fraction(input: string): Fraction {
 			}
 		}
 		if(char == "/") {
+			if(i == 0) {
+				f.error = "Put something before the '/', for example a '1'.";
+				f.hard_error = true;
+				return f;
+			}
 			if(current == f.denumerator) {
 				f.error = "Use only a single '/'";
 				f.hard_error = true;
+				return f;
 			}
 			current = f.denumerator;
 		}
 		if(char == "^") {
+			if(in_pow) {
+				f.error = "Invalid use of '^'";
+			}
 			in_pow = true;
 		}
 	}
