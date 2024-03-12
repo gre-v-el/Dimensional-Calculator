@@ -19,26 +19,22 @@ function fract_to_si_unit(fract: Fraction): Unit {
 	let merged: {v: string, p: number}[] = [];
 	for(let u of units) {
 		let found = merged.find((m) => m.v == u.v);
-		if(found) {
-			found.p += u.p;
-		}
-		else {
-			merged.push(u);
-		}
+
+		if(found) found.p += u.p;
+		else merged.push(u);
 	}
 
 	// split prefixes
-	for(let i = 0; i < merged.length; i++) {
-		let u = merged[i];
-		if(!is_basic_unit(u.v)) {
-			for(let p of UNITS.prefixes) {
-				if(u.v.startsWith(p.symbol)) {
-					let candidate = u.v.substring(p.symbol.length);
-					if(is_basic_unit(candidate)) {
-						merged[i] = {v: candidate, p: u.p};
-						mult *= 10 ** (p.exponent * u.p);
-					}
-				}
+	for(let u of merged) {
+		if(is_basic_unit(u.v)) continue;
+
+		for(let p of UNITS.prefixes) {
+			if(!u.v.startsWith(p.symbol)) continue;
+
+			let candidate = u.v.substring(p.symbol.length);
+			if(is_basic_unit(candidate)) {
+				u.v = candidate;
+				mult *= 10 ** (p.exponent * u.p);
 			}
 		}
 	}
@@ -166,27 +162,15 @@ function reduce_unit(unit: Unit): Unit {
 
 		if(best) {
 			improved = true;
-			if(mult) {
-				unit = multiply(unit, best);
-				let found = unit.compounds.find((c) => c.name == best!.symbol);
-				unit.multiplier *= best.multiplier;
-				if(found) {
-					found.power -= 1;
-				}
-				else {
-					unit.compounds.push({name: best.symbol, power: -1});
-				}
+
+			unit = mult ? multiply(unit, best) : divide(unit, best);
+			let found = unit.compounds.find((c) => c.name == best!.symbol);
+			unit.multiplier = mult ? unit.multiplier*best.multiplier : unit.multiplier/best.multiplier;
+			if(found) {
+				found.power += mult ? -1 : 1;
 			}
 			else {
-				unit = divide(unit, best);
-				let found = unit.compounds.find((c) => c.name == best!.symbol);
-				unit.multiplier /= best.multiplier;
-				if(found) {
-					found.power += 1;
-				}
-				else {
-					unit.compounds.push({name: best.symbol, power: 1});
-				}
+				unit.compounds.push({name: best.symbol, power: mult ? -1 : 1});
 			}
 		}
 		if(!improved) break;
@@ -194,3 +178,7 @@ function reduce_unit(unit: Unit): Unit {
 
 	return unit;
 }
+
+// kg*m H T ohm / s^2 C C F
+// kg5 m7 s-15 A-9
+// kg ohm / m A F^3

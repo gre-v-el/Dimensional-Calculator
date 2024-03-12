@@ -20,30 +20,28 @@ function fract_to_si_unit(fract) {
     var merged = [];
     var _loop_1 = function (u) {
         var found = merged.find(function (m) { return m.v == u.v; });
-        if (found) {
+        if (found)
             found.p += u.p;
-        }
-        else {
+        else
             merged.push(u);
-        }
     };
     for (var _d = 0, units_1 = units; _d < units_1.length; _d++) {
         var u = units_1[_d];
         _loop_1(u);
     }
     // split prefixes
-    for (var i = 0; i < merged.length; i++) {
-        var u = merged[i];
-        if (!is_basic_unit(u.v)) {
-            for (var _e = 0, _f = UNITS.prefixes; _e < _f.length; _e++) {
-                var p = _f[_e];
-                if (u.v.startsWith(p.symbol)) {
-                    var candidate = u.v.substring(p.symbol.length);
-                    if (is_basic_unit(candidate)) {
-                        merged[i] = { v: candidate, p: u.p };
-                        mult *= Math.pow(10, (p.exponent * u.p));
-                    }
-                }
+    for (var _e = 0, merged_1 = merged; _e < merged_1.length; _e++) {
+        var u = merged_1[_e];
+        if (is_basic_unit(u.v))
+            continue;
+        for (var _f = 0, _g = UNITS.prefixes; _f < _g.length; _f++) {
+            var p = _g[_f];
+            if (!u.v.startsWith(p.symbol))
+                continue;
+            var candidate = u.v.substring(p.symbol.length);
+            if (is_basic_unit(candidate)) {
+                u.v = candidate;
+                mult *= Math.pow(10, (p.exponent * u.p));
             }
         }
     }
@@ -79,8 +77,8 @@ function fract_to_si_unit(fract) {
             }
         }
     };
-    for (var _g = 0, merged_1 = merged; _g < merged_1.length; _g++) {
-        var u = merged_1[_g];
+    for (var _h = 0, merged_2 = merged; _h < merged_2.length; _h++) {
+        var u = merged_2[_h];
         _loop_2(u);
     }
     return si_units;
@@ -164,27 +162,14 @@ function reduce_unit(unit) {
         }
         if (best) {
             improved = true;
-            if (mult) {
-                unit = multiply(unit, best);
-                var found = unit.compounds.find(function (c) { return c.name == best.symbol; });
-                unit.multiplier *= best.multiplier;
-                if (found) {
-                    found.power -= 1;
-                }
-                else {
-                    unit.compounds.push({ name: best.symbol, power: -1 });
-                }
+            unit = mult ? multiply(unit, best) : divide(unit, best);
+            var found = unit.compounds.find(function (c) { return c.name == best.symbol; });
+            unit.multiplier = mult ? unit.multiplier * best.multiplier : unit.multiplier / best.multiplier;
+            if (found) {
+                found.power += mult ? -1 : 1;
             }
             else {
-                unit = divide(unit, best);
-                var found = unit.compounds.find(function (c) { return c.name == best.symbol; });
-                unit.multiplier /= best.multiplier;
-                if (found) {
-                    found.power += 1;
-                }
-                else {
-                    unit.compounds.push({ name: best.symbol, power: 1 });
-                }
+                unit.compounds.push({ name: best.symbol, power: mult ? -1 : 1 });
             }
         }
         if (!improved)
@@ -197,3 +182,6 @@ function reduce_unit(unit) {
     }
     return unit;
 }
+// kg*m H T ohm / s^2 C C F
+// kg5 m7 s-15 A-9
+// kg ohm / m A F^3

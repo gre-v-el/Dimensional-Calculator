@@ -7,7 +7,7 @@ const createMathElementContent = (tag: string, content: string) => {
 } 
 
 function render_fraction(fraction_data: Fraction, output: MathMLElement, error?: HTMLSpanElement) {
-	if(fraction_data.error.length > 0) error!.textContent = fraction_data.error;
+	if(error) error!.textContent = fraction_data.error;
 
 	if(fraction_data.hard_error) return;
 
@@ -94,6 +94,8 @@ function render_unit(v: Unit, output: MathMLElement) {
 		if(c.power > 0) f.numerator.push(factor);
 		else f.denumerator.push(factor);
 	}
+
+	if(f.numerator.length == 0) f.numerator.push({value: "1", power: "1", error: false});
 
 	render_fraction(f, output);
 }

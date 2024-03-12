@@ -7,7 +7,7 @@ var createMathElementContent = function (tag, content) {
     return e;
 };
 function render_fraction(fraction_data, output, error) {
-    if (fraction_data.error.length > 0)
+    if (error)
         error.textContent = fraction_data.error;
     if (fraction_data.hard_error)
         return;
@@ -88,5 +88,7 @@ function render_unit(v, output) {
         else
             f.denumerator.push(factor);
     }
+    if (f.numerator.length == 0)
+        f.numerator.push({ value: "1", power: "1", error: false });
     render_fraction(f, output);
 }

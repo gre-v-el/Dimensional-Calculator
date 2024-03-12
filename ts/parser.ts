@@ -42,7 +42,7 @@ function validate_fraction(f: Fraction) {
 		for(let u of a) {
 			if(!is_unit_good(u.value)) {
 				u.error = true;
-				f.error = "I don't know these units";
+				f.error = "I don't know these units (" + u.value + ")";
 			}
 		}
 	}

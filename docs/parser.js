@@ -43,7 +43,7 @@ function validate_fraction(f) {
             var u = a_2[_e];
             if (!is_unit_good(u.value)) {
                 u.error = true;
-                f.error = "I don't know these units";
+                f.error = "I don't know these units (" + u.value + ")";
             }
         }
     }
