@@ -1,8 +1,13 @@
 let input_box = <HTMLInputElement>document.getElementById("input")!;
 let error_span = <HTMLSpanElement>document.getElementById("error-message")!;
+
 let math_input = <MathMLElement>document.getElementById("math-input")!;
 let math_si = <MathMLElement>document.getElementById("math-si")!;
 let math_simplified = <MathMLElement>document.getElementById("math-simplified")!;
+
+let input_desc = <HTMLSpanElement>document.getElementById("input-description")!;
+let si_desc = <HTMLSpanElement>document.getElementById("si-description")!;
+let simplified_desc = <HTMLSpanElement>document.getElementById("simplified-description")!;
 
 function handle_input() {
 	let fraction = parse_to_fraction(input_box.value);

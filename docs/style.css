@@ -73,6 +73,11 @@ footer {
 	transition: opacity 0.2s;
 }
 
+.result-section span {
+	display: block;
+	min-height: 1em;
+}
+
 hr {
 	border-color: #0003;
 }
