@@ -31,7 +31,7 @@ function validate_fraction(f: Fraction) {
 	for(let a of [f.numerator, f.denumerator]) {
 		for(let u of a) {
 			if(isNaN(Number(u.power))) {
-				f.error = "Power is not a number";
+				f.error = "Exponent is not a number";
 				u.error = true;
 			}
 		}

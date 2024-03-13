@@ -1,33 +1,68 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Dimensional Calculator</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Dimensional Analysis Calculator</title>
+	<meta name="description" content="A tool to express any compound unit as pure SI units and to simplify it as much as possible.">
+
 	<link rel="stylesheet" type="text/css" href="style.css">
-	<script src="units.js"></script>
-	<script src="math_renderer.js"></script>
-	<script src="parser.js"></script>
-	<script src="calculator.js"></script>
+	<script src="units.js" defer></script>
+	<script src="math_renderer.js" defer></script>
+	<script src="parser.js" defer></script>
+	<script src="calculator.js" defer></script>
 	<script src="main.js" defer></script>
 </head>
 <body>
     <header>
-        <h1>Dimensional Calculator</h1>
+        <h1>Dimensional Analysis Calculator</h1>
     </header>
-    <div class="container">
+    <section class="container">
 		<div class="input-container">
-			<input type="text" class="input-field" id="input" placeholder="Enter units separated by spaces" value="kg*m / s^2" autocomplete="off">
-			I interpret your input as 
-			<math display="block" id="math-input"></math>
+			<input type="text" class="input-field" id="input" placeholder="Enter a unit..." value="kg*mm / s^2" autocomplete="off">
 			<span id="error-message"></span>
-			which can be expressed in SI units as
-			<math display="block" id="math-si"></math>
-			and can be simplified to
-			<math display="block" id="math-simplified"></math>
+		
+			<hr>
+		
+			<div class="result-section">
+				<div class="horizontal">
+					<p>Your input:</p>
+					<math display="block" id="math-input"></math>
+				</div>
+				<span id="input-description"></span>
+			</div>
+
+			<hr>
+		
+			<div class="result-section">
+				<div class="horizontal">
+					<p>Converted to SI units:</p>
+					<math display="block" id="math-si"></math>
+				</div>
+				<span id="si-description"></span>
+			</div>
+			
+			<hr>
+
+			<div class="result-section">
+				<div class="horizontal">
+					<p>And simplified:</p>
+					<math display="block" id="math-simplified"></math>
+				</div>
+				<span id="simplified-description"></span>
+			</div>
 		</div>
-	</div>
+	</section>
     <footer>
-        <p>Sample text for the footer</p>
-    </footer>
+		<!-- copyright symbol -->
+		<p><span style="font-size: 1.3em;">&copy;</span>oded by <a href="https://gre-v-el.github.io/portfolio">Gabriel Myszkier</a></p>
+	</footer>
     </script>
 </body>
 </html>
+
+<!--
+	TODO:
+	add descriptions
+	add an article
+	add more systems (imprial/seven Cs)
+-->

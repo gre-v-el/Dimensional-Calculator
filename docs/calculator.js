@@ -83,15 +83,19 @@ function fract_to_si_unit(fract) {
     }
     return si_units;
 }
+function single_heuristic(n) {
+    n = Math.abs(n);
+    return n >= 1 || n == 0 ? n : 1 / n;
+}
 function heuristic(unit) {
     var sum = 0;
     for (var k in unit.definition) {
-        // @ts-ignore
-        sum += Math.abs(unit.definition[k]);
+        // @ts-ignore 
+        sum += single_heuristic(unit.definition[k]);
     }
     for (var _i = 0, _a = unit.compounds; _i < _a.length; _i++) {
         var c = _a[_i];
-        sum += Math.abs(c.power);
+        sum += single_heuristic(c.power);
     }
     return sum;
 }
@@ -141,39 +145,40 @@ function multiply(u1, u2) {
 }
 function reduce_unit(unit) {
     var _loop_3 = function () {
-        var improved = false;
         var best;
+        var best_unit = void 0;
         var mult = true;
         var best_dist = heuristic(unit);
         for (var _i = 0, _a = UNITS.derived; _i < _a.length; _i++) {
             var compound = _a[_i];
             var d = divide(unit, compound);
             var m = multiply(unit, compound);
-            if (heuristic(d) < best_dist) {
+            var hd = heuristic(d);
+            var hm = heuristic(m);
+            if (hd < best_dist) {
                 best = compound;
-                best_dist = heuristic(d);
+                best_unit = d;
+                best_dist = hd;
                 mult = false;
             }
-            if (heuristic(m) < best_dist) {
+            if (hm < best_dist) {
                 best = compound;
-                best_dist = heuristic(m);
+                best_unit = m;
+                best_dist = hm;
                 mult = true;
             }
         }
         if (best) {
-            improved = true;
-            unit = mult ? multiply(unit, best) : divide(unit, best);
+            unit = best_unit;
             var found = unit.compounds.find(function (c) { return c.name == best.symbol; });
-            unit.multiplier = mult ? unit.multiplier * best.multiplier : unit.multiplier / best.multiplier;
-            if (found) {
+            if (found)
                 found.power += mult ? -1 : 1;
-            }
-            else {
+            else
                 unit.compounds.push({ name: best.symbol, power: mult ? -1 : 1 });
-            }
         }
-        if (!improved)
+        else {
             return "break";
+        }
     };
     while (true) {
         var state_1 = _loop_3();

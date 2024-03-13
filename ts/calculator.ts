@@ -76,14 +76,19 @@ function fract_to_si_unit(fract: Fraction): Unit {
 	return si_units;
 }
 
+function single_heuristic(n: number): number {
+	n = Math.abs(n);
+	return n >= 1 || n == 0 ? n : 1 / n;
+}
+
 function heuristic(unit: Unit): number {
 	let sum = 0;
 	for(let k in unit.definition) {
-		// @ts-ignore
-		sum += Math.abs(unit.definition[k]);
+		// @ts-ignore 
+		sum += single_heuristic(unit.definition[k]);
 	}
 	for(let c of unit.compounds) {
-		sum += Math.abs(c.power);
+		sum += single_heuristic(c.power);
 	}
 	return sum;
 }
@@ -140,40 +145,39 @@ function multiply(u1: Unit, u2: DerivedUnit): Unit {
 
 function reduce_unit(unit: Unit): Unit {
 	while(true) {
-		let improved = false;
 		let best: DerivedUnit | undefined;
+		let best_unit: Unit | undefined;
 		let mult = true;
 		let best_dist = heuristic(unit);
 
 		for(let compound of UNITS.derived) {
 			let d = divide(unit, compound);
 			let m = multiply(unit, compound);
-			if(heuristic(d) < best_dist) {
+			let hd = heuristic(d);
+			let hm = heuristic(m);
+			if(hd < best_dist) {
 				best = compound;
-				best_dist = heuristic(d);
+				best_unit = d;
+				best_dist = hd;
 				mult = false;
 			}
-			if(heuristic(m) < best_dist) {
+			if(hm < best_dist) {
 				best = compound;
-				best_dist = heuristic(m);
+				best_unit = m;
+				best_dist = hm;
 				mult = true;
 			}
 		}
 
 		if(best) {
-			improved = true;
-
-			unit = mult ? multiply(unit, best) : divide(unit, best);
+			unit = best_unit!;
 			let found = unit.compounds.find((c) => c.name == best!.symbol);
-			unit.multiplier = mult ? unit.multiplier*best.multiplier : unit.multiplier/best.multiplier;
-			if(found) {
-				found.power += mult ? -1 : 1;
-			}
-			else {
-				unit.compounds.push({name: best.symbol, power: mult ? -1 : 1});
-			}
+			if(found) found.power += mult ? -1 : 1;
+			else unit.compounds.push({name: best.symbol, power: mult ? -1 : 1});
 		}
-		if(!improved) break;
+		else {
+			break;
+		}
 	}
 
 	return unit;

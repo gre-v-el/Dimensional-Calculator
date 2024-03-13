@@ -2,6 +2,8 @@ body {
 	font-family: Arial, sans-serif;
 	margin: 0;
 	padding: 0;
+	
+    background-color: #eee;
 
 	display: flex;
 	flex-direction: column;
@@ -24,39 +26,61 @@ footer {
 	flex-grow: 1;
 }
 .input-container {
-	width: 600px;
+	width: calc(min(600px, 100vw - 40px));
 	margin: 20px auto;
 	padding: 20px;
-	border: 1px solid #ccc;
+	border-radius: 5px;
 	box-sizing: border-box;
+	background-color: #fff;
+	box-shadow: 0 0 10px 0 rgba(0,0,0,0.2);
 }
 .input-field {
 	width: 100%;
 	padding: 10px;
-	font-size: 16px;
-	margin-bottom: 30px;
+	font-size: 18px;
+	margin-bottom: 20px;
 	box-sizing: border-box;
+	border: 1px solid #ccc;
+	border-radius: 3px;	
 }
-#calculate-button {
-	background-color: #4CAF50;
-	color: #fff;
-	padding: 10px 20px;
-	border: none;
-	cursor: pointer;
-	font-size: 16px;
-	transition: opacity 0.2s;
-}
-#calculate-button:not([disabled]):hover {
-	background-color: #45a049;
-}
-#calculate-button[disabled] {
-	opacity: 0.3;
-	cursor: default;
-}
+
 .output {
 	margin-top: 20px;
 }
 
 #error-message {
+	font-weight: bold;
+	height: 1em;
+	display: block;
 	color: red;
+	margin-bottom: 20px;
+	transition: opacity 0.2s;
+}
+
+.horizontal {
+    margin: 20px;
+	display: flex;
+	align-items: center;
+}
+
+.horizontal p {
+	flex: 2;
+	text-align: right;
+}
+
+.horizontal math {
+	flex: 3;
+	transition: opacity 0.2s;
+}
+
+hr {
+	border-color: #0003;
+}
+
+a {
+	color: #fff;
+}
+
+a:hover {
+	text-decoration: none;
 }

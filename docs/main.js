@@ -1,22 +1,23 @@
 "use strict";
-var input_element = document.getElementById("input");
-var si_output_element = document.getElementById("math-si");
-var simple_output_element = document.getElementById("math-simplified");
-var math_element = document.getElementById("math-input");
-var error_element = document.getElementById("error-message");
+var input_box = document.getElementById("input");
+var error_span = document.getElementById("error-message");
+var math_input = document.getElementById("math-input");
+var math_si = document.getElementById("math-si");
+var math_simplified = document.getElementById("math-simplified");
 function handle_input() {
-    math_element.innerHTML = "";
-    si_output_element.innerHTML = "";
-    simple_output_element.innerHTML = "";
-    var fraction = parse_to_fraction(input_element.value);
+    var fraction = parse_to_fraction(input_box.value);
     validate_fraction(fraction);
-    render_fraction(fraction, math_element, error_element);
+    render_fraction(fraction, math_input, error_span);
     if (fraction.error.length == 0) {
         var unit = fract_to_si_unit(fraction);
-        render_unit(unit, si_output_element);
+        render_unit(unit, math_si, false);
         unit = reduce_unit(unit);
-        render_unit(unit, simple_output_element);
+        render_unit(unit, math_simplified, true);
+    }
+    else {
+        math_si.style.opacity = "0";
+        math_simplified.style.opacity = "0";
     }
 }
-input_element.addEventListener("keyup", handle_input);
+input_box.addEventListener("keyup", handle_input);
 handle_input();

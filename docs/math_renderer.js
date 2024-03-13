@@ -6,11 +6,22 @@ var createMathElementContent = function (tag, content) {
     e.textContent = content;
     return e;
 };
-function render_fraction(fraction_data, output, error) {
-    if (error)
+function render_fraction(fraction_data, output, error, clear) {
+    if (clear === void 0) { clear = true; }
+    if (error && fraction_data.error.length > 0) {
         error.textContent = fraction_data.error;
-    if (fraction_data.hard_error)
+        error.style.opacity = "1";
+    }
+    else if (error) {
+        error.style.opacity = "0";
+    }
+    if (fraction_data.hard_error) {
+        output.style.opacity = "0";
         return;
+    }
+    output.style.opacity = "1";
+    if (clear)
+        output.innerHTML = "";
     var numerator = createMathElement("mrow");
     populate_mrow(numerator, fraction_data.numerator);
     if (fraction_data.denumerator.length > 0) {
@@ -50,11 +61,50 @@ function populate_mrow(mrow, units) {
         }
     }
 }
-function render_unit(v, output) {
-    if (v.multiplier != 1) {
-        output.appendChild(createMathElementContent("mn", v.multiplier.toString()));
-        output.appendChild(createMathElementContent("mo", "·"));
+function create_exponent(base, power) {
+    var msup = createMathElement("msup");
+    msup.appendChild(createMathElementContent("mi", base));
+    msup.appendChild(createMathElementContent("mn", power));
+    return msup;
+}
+function create_floating_point(value) {
+    return createMathElementContent("mn", (Math.round(value * 1000) / 1000).toString());
+}
+function render_multiplier(f, multiplier, output, use_prefixes) {
+    var added = false;
+    if (use_prefixes &&
+        f.denumerator.length == 0 &&
+        f.numerator.length == 1 &&
+        f.numerator[0].power == "1" &&
+        f.numerator[0].value != "1") {
+        var exp_1 = Math.floor(Math.log10(multiplier));
+        exp_1 = Math.floor(exp_1 / 3) * 3;
+        var mult = multiplier / Math.pow(10, exp_1);
+        var prefix = UNITS.prefixes.find(function (p) { return p.exponent == exp_1; });
+        if (mult.toFixed(3) != "1.000") {
+            output.appendChild(create_floating_point(mult));
+            output.appendChild(createMathElementContent("mo", "·"));
+        }
+        if (prefix) {
+            f.numerator[0].value = prefix.symbol + f.numerator[0].value;
+            added = true;
+        }
     }
+    else if (!added) {
+        var exp = Math.floor(Math.log10(multiplier));
+        var mult = multiplier / Math.pow(10, exp);
+        if (mult.toFixed(3) != "1.000") {
+            output.appendChild(create_floating_point(mult));
+            output.appendChild(createMathElementContent("mo", "·"));
+        }
+        if (exp != 0) {
+            output.appendChild(create_exponent("10", exp.toString()));
+            output.appendChild(createMathElementContent("mo", "·"));
+        }
+    }
+}
+function render_unit(v, output, use_prefixes) {
+    output.innerHTML = "";
     var f = {
         numerator: [],
         denumerator: [],
@@ -90,5 +140,8 @@ function render_unit(v, output) {
     }
     if (f.numerator.length == 0)
         f.numerator.push({ value: "1", power: "1", error: false });
-    render_fraction(f, output);
+    if (v.multiplier.toFixed(3) != "1.000") {
+        render_multiplier(f, v.multiplier, output, use_prefixes);
+    }
+    render_fraction(f, output, undefined, false);
 }

@@ -30,7 +30,7 @@ function validate_fraction(f) {
         for (var _b = 0, a_1 = a; _b < a_1.length; _b++) {
             var u = a_1[_b];
             if (isNaN(Number(u.power))) {
-                f.error = "Power is not a number";
+                f.error = "Exponent is not a number";
                 u.error = true;
             }
         }
