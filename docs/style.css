@@ -2,8 +2,10 @@ body {
 	font-family: Arial, sans-serif;
 	margin: 0;
 	padding: 0;
+	overflow: hidden;
 	
-    background-color: #eee;
+    /* background-color: #eee; */
+	background-color: #333;
 
 	display: flex;
 	flex-direction: column;
@@ -11,18 +13,26 @@ body {
 	min-height: 100vh;
 }
 header {
-	background-color: #333;
 	color: #fff;
 	padding: 20px;
 	text-align: center;
+
+	-webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
 footer {
-	background-color: #333;
+	z-index: 10;
 	color: #fff;
 	padding: 10px;
 	text-align: center;
 }
 .container {
+	z-index: 10;
+	background-color: #eee;
 	flex-grow: 1;
 }
 .input-container {
@@ -93,4 +103,102 @@ a {
 
 a:hover {
 	text-decoration: none;
+}
+
+header h1 {
+	position: relative;
+	z-index: 1;
+}
+
+#c-letter, #c-clicked {
+	display: inline-block;
+	position: relative;
+	cursor: pointer;
+}
+
+#c-letter::after, #c-clicked::after {
+	content: '';
+	position: absolute;
+
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	z-index: -1;
+
+	scale: 1.4;
+	border-radius: 4px;
+	background-color: #7c4e7e;
+
+	opacity: 0;
+	transition: opacity 2s, scale 0.4s cubic-bezier(.46,1.78,.77,1.01);
+	animation: infinite spin 20s linear;
+}
+
+#c-letter:hover:after {
+	opacity: 1;
+}
+
+#c-clicked::after {
+	opacity: 1;
+}
+
+@keyframes spin {
+	0% {
+		transform: rotate(0deg);
+	}
+	100% {
+		transform: rotate(360deg);
+	}
+}
+
+#secret {
+	background-color: #eee;
+	text-align: right;
+	padding: 10px;
+	color: #0004;
+	cursor: none;
+	position: relative;
+	z-index: 10;
+}
+
+#tooltip {
+	position: absolute;
+	top: 0;
+	right: 0;
+	transform: translate(-50%, 0);
+	background-color: #000;
+	color: #fff;
+	padding: 5px;
+	border-radius: 5px;
+	opacity: 0;
+	transition: opacity 0.2s;
+}
+
+#secret:hover #tooltip {
+	opacity: 1;
+}
+
+
+
+.clicks-1::after {
+	scale: 2 !important;
+}
+.clicks-2::after {
+	scale: 3 !important;
+}
+.clicks-3::after {
+	scale: 4.4 !important;
+}
+.clicks-4::after {
+	scale: 6 !important;
+}
+.clicks-5::after {
+	scale: 8 !important;
+}
+.clicks-6::after {
+	scale: 11 !important;
+}
+.clicks-7::after {
+	scale: 100 !important;
 }

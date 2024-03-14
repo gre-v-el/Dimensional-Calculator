@@ -14,7 +14,7 @@
 </head>
 <body>
     <header>
-        <h1>Dimensional Analysis <span>C</span>alculator</h1>
+        <h1>Dimensional Analysis <span id="c-letter">C</span>alculator</h1>
     </header>
     <section class="container">
 		<div class="input-container">
@@ -41,14 +41,27 @@
 			
 			<hr>
 
-			<div class="result-section">
+			<div class="result-section" id="simplified-result">
 				<div class="horizontal">
 					<p>And simplified:</p>
 					<math display="block" id="math-simplified"></math>
 				</div>
 			</div>
+
+			<div class="result-section" id="seven-cs-result" style="display: none;">
+				<div class="horizontal">
+					<p>And seven Cs:</p>
+					<math display="block" id="math-cs"></math>
+				</div>
+			</div>
 		</div>
 	</section>
+	<div id="secret">
+		Hover over me
+		<div id="tooltip">
+			↑ Click the C seven times.
+		</div>
+	</div>
     <footer>
 		<!-- copyright symbol -->
 		<p><span style="font-size: 1.3em;">&copy;</span>oded by <a href="https://gre-v-el.github.io/portfolio">Gabriel Myszkier</a></p>
