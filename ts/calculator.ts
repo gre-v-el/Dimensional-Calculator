@@ -76,6 +76,8 @@ function expand_si(u: Unit) {
 			}
 		}
 	}
+
+	u.compounds = [];
 }
 
 function single_heuristic(n: number): number {
@@ -184,6 +186,73 @@ function reduce_unit(unit: Unit): Unit {
 
 	return unit;
 }
+
+function si_to_cs(si: SiDefinition, multiplier: number): Unit {
+	// change the multiplier according to the conversion factors between si and cs
+	multiplier /= (Math.PI * (2 - Math.SQRT2)) ** si.sr;
+	multiplier *= 6.02214076e-21 ** si.mol;
+	multiplier /= (2*Math.PI) ** si.rad;
+
+	let unit = {
+		multiplier: multiplier,
+		definition: {
+			kg: 0,
+			m: 0,
+			s: 0,
+			A: 0,
+			K: 0,
+			mol: 0,
+			cd: 0,
+			rad: 0,
+			sr: 0,
+		},
+		compounds: [
+			// the following four require solving a system of four equations
+			{
+				name: "c",
+				power: si.m - si.kg
+			},
+			{
+				name: "cal",
+				power: si.kg / 2
+			},
+			{
+				name: "C4",
+				power: si.m - si.s - 2*si.kg - si.A
+			},
+			{
+				name: "C",
+				power: si.A
+			},
+			// these are trivial
+			{
+				name: "deg_C",
+				power: si.K
+			},
+			{
+				name: "cd",
+				power: si.cd
+			},
+			{
+				name: "con",
+				power: si.sr
+			},
+			{
+				name: "cent",
+				power: si.mol
+			},
+			{
+				name: "cir",
+				power: si.rad
+			}
+		],
+	};
+
+	unit. compounds = unit.compounds.filter((c) => c.power != 0);
+
+	return unit;
+}
+
 
 // kg*m H T ohm / s^2 C C F
 // kg5 m7 s-15 A-9
