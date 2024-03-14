@@ -1,5 +1,5 @@
 function is_basic_unit(u: string): boolean {
-	return UNITS.SI.some((s) => s.symbol == u) ||
+	return UNITS.SI.includes(u) ||
            UNITS.derived.some((d) => d.symbol == u);
 }
 

@@ -1,52 +1,52 @@
 "use strict";
-function fract_to_si_unit(fract) {
+function fract_to_unit(fract) {
     var mult = 1;
     var units = [];
     for (var _i = 0, _a = fract.numerator; _i < _a.length; _i++) {
-        var u = _a[_i];
-        if (!isNaN(Number(u.value))) {
-            mult *= Math.pow(Number(u.value), Number(u.power));
+        var u_1 = _a[_i];
+        if (!isNaN(Number(u_1.value))) {
+            mult *= Math.pow(Number(u_1.value), Number(u_1.power));
         }
-        units.push({ v: u.value, p: Number(u.power) });
+        units.push({ v: u_1.value, p: Number(u_1.power) });
     }
     for (var _b = 0, _c = fract.denumerator; _b < _c.length; _b++) {
-        var u = _c[_b];
-        if (!isNaN(Number(u.value))) {
-            mult /= Math.pow(Number(u.value), Number(u.power));
+        var u_2 = _c[_b];
+        if (!isNaN(Number(u_2.value))) {
+            mult /= Math.pow(Number(u_2.value), Number(u_2.power));
         }
-        units.push({ v: u.value, p: -Number(u.power) });
+        units.push({ v: u_2.value, p: -Number(u_2.power) });
     }
     // merge like units
     var merged = [];
-    var _loop_1 = function (u) {
-        var found = merged.find(function (m) { return m.v == u.v; });
+    var _loop_1 = function (u_3) {
+        var found = merged.find(function (m) { return m.v == u_3.v; });
         if (found)
-            found.p += u.p;
+            found.p += u_3.p;
         else
-            merged.push(u);
+            merged.push(u_3);
     };
     for (var _d = 0, units_1 = units; _d < units_1.length; _d++) {
-        var u = units_1[_d];
-        _loop_1(u);
+        var u_3 = units_1[_d];
+        _loop_1(u_3);
     }
     // split prefixes
     for (var _e = 0, merged_1 = merged; _e < merged_1.length; _e++) {
-        var u = merged_1[_e];
-        if (is_basic_unit(u.v))
+        var u_4 = merged_1[_e];
+        if (is_basic_unit(u_4.v))
             continue;
         for (var _f = 0, _g = UNITS.prefixes; _f < _g.length; _f++) {
             var p = _g[_f];
-            if (!u.v.startsWith(p.symbol))
+            if (!u_4.v.startsWith(p.symbol))
                 continue;
-            var candidate = u.v.substring(p.symbol.length);
+            var candidate = u_4.v.substring(p.symbol.length);
             if (is_basic_unit(candidate)) {
-                u.v = candidate;
-                mult *= Math.pow(10, (p.exponent * u.p));
+                u_4.v = candidate;
+                mult *= Math.pow(10, (p.exponent * u_4.p));
             }
         }
     }
-    // change combined units to SI units
-    var si_units = {
+    // collect into a unit
+    var u = {
         multiplier: mult,
         definition: {
             kg: 0,
@@ -61,27 +61,31 @@ function fract_to_si_unit(fract) {
         },
         compounds: [],
     };
-    var _loop_2 = function (u) {
-        var found = UNITS.SI.find(function (s) { return s.symbol == u.v; });
-        if (found) {
-            // @ts-ignore
-            si_units.definition[found.symbol] += u.p;
-        }
-        else {
-            var derived = UNITS.derived.find(function (d) { return d.symbol == u.v; });
-            if (derived) {
-                for (var k in derived.definition) {
-                    // @ts-ignore
-                    si_units.definition[k] += derived.definition[k] * u.p;
-                }
+    for (var _h = 0, merged_2 = merged; _h < merged_2.length; _h++) {
+        var m = merged_2[_h];
+        var found = UNITS.SI.includes(m.v);
+        // @ts-ignore
+        if (found)
+            u.definition[m.v] += m.p;
+        else
+            u.compounds.push({ name: m.v, power: m.p });
+    }
+    return u;
+}
+function expand_si(u) {
+    var _loop_2 = function (c) {
+        var derived = UNITS.derived.find(function (d) { return d.symbol == c.name; });
+        if (derived) {
+            for (var k in derived.definition) {
+                // @ts-ignore
+                u.definition[k] += derived.definition[k] * c.power;
             }
         }
     };
-    for (var _h = 0, merged_2 = merged; _h < merged_2.length; _h++) {
-        var u = merged_2[_h];
-        _loop_2(u);
+    for (var _i = 0, _a = u.compounds; _i < _a.length; _i++) {
+        var c = _a[_i];
+        _loop_2(c);
     }
-    return si_units;
 }
 function single_heuristic(n) {
     n = Math.abs(n);

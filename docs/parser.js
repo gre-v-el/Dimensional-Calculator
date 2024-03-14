@@ -1,6 +1,6 @@
 "use strict";
 function is_basic_unit(u) {
-    return UNITS.SI.some(function (s) { return s.symbol == u; }) ||
+    return UNITS.SI.includes(u) ||
         UNITS.derived.some(function (d) { return d.symbol == u; });
 }
 function is_unit_good(u) {

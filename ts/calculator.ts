@@ -1,4 +1,4 @@
-function fract_to_si_unit(fract: Fraction): Unit {
+function fract_to_unit(fract: Fraction): Unit {
 	let mult = 1;
 	let units: {v: string, p: number}[] = [];
 	
@@ -39,8 +39,8 @@ function fract_to_si_unit(fract: Fraction): Unit {
 		}
 	}
 
-	// change combined units to SI units
-	let si_units: Unit = {
+	// collect into a unit
+	let u: Unit = {
 		multiplier: mult,
 		definition: {
 			kg: 0,
@@ -55,25 +55,27 @@ function fract_to_si_unit(fract: Fraction): Unit {
 		},
 		compounds: [],
 	};
-	
-	for(let u of merged) {
-		let found = UNITS.SI.find((s) => s.symbol == u.v);
-		if(found) {
-			// @ts-ignore
-			si_units.definition[found.symbol]! += u.p;
-		}
-		else {
-			let derived = UNITS.derived.find((d) => d.symbol == u.v);
-			if(derived) {
-				for(let k in derived.definition) {
-					// @ts-ignore
-					si_units.definition[k] += derived.definition[k] * u.p;
-				}
+
+	for(let m of merged) {
+		let found = UNITS.SI.includes(m.v);
+		// @ts-ignore
+		if(found) u.definition[m.v]! += m.p;
+		else u.compounds.push({name: m.v, power: m.p})
+	}
+
+	return u;
+}
+
+function expand_si(u: Unit) {
+	for(let c of u.compounds) {
+		let derived = UNITS.derived.find((d) => d.symbol == c.name);
+		if(derived) {
+			for(let k in derived.definition) {
+				// @ts-ignore
+				u.definition[k] += derived.definition[k] * c.power;
 			}
 		}
 	}
-
-	return si_units;
 }
 
 function single_heuristic(n: number): number {

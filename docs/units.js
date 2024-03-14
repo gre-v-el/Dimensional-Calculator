@@ -1,46 +1,8 @@
 "use strict";
 var UNITS = {
-    SI: [
-        {
-            name: "kilogram",
-            symbol: "kg",
-        },
-        {
-            name: "meter",
-            symbol: "m",
-        },
-        {
-            name: "second",
-            symbol: "s",
-        },
-        {
-            name: "ampere",
-            symbol: "A",
-        },
-        {
-            name: "kelvin",
-            symbol: "K",
-        },
-        {
-            name: "mole",
-            symbol: "mol",
-        },
-        {
-            name: "candela",
-            symbol: "cd",
-        },
-        {
-            name: "radian",
-            symbol: "rd",
-        },
-        {
-            name: "steradian",
-            symbol: "sr",
-        }
-    ],
+    SI: ["kg", "m", "s", "A", "K", "mol", "cd", "rad", "sr"],
     derived: [
         {
-            name: "hertz",
             symbol: "Hz",
             multiplier: 1,
             definition: {
@@ -55,12 +17,10 @@ var UNITS = {
                 sr: 0
             },
             alternative: {
-                name: "becquerel",
                 symbol: "Bq"
             }
         },
         {
-            name: "newton",
             symbol: "N",
             multiplier: 1,
             definition: {
@@ -76,7 +36,6 @@ var UNITS = {
             }
         },
         {
-            name: "pascal",
             symbol: "Pa",
             multiplier: 1,
             definition: {
@@ -92,7 +51,6 @@ var UNITS = {
             }
         },
         {
-            name: "joule",
             symbol: "J",
             multiplier: 1,
             definition: {
@@ -108,7 +66,6 @@ var UNITS = {
             }
         },
         {
-            name: "watt",
             symbol: "W",
             multiplier: 1,
             definition: {
@@ -124,7 +81,6 @@ var UNITS = {
             }
         },
         {
-            name: "coulomb",
             symbol: "C",
             multiplier: 1,
             definition: {
@@ -140,7 +96,6 @@ var UNITS = {
             }
         },
         {
-            name: "volt",
             symbol: "V",
             multiplier: 1,
             definition: {
@@ -156,7 +111,6 @@ var UNITS = {
             }
         },
         {
-            name: "farad",
             symbol: "F",
             multiplier: 1,
             definition: {
@@ -172,7 +126,6 @@ var UNITS = {
             }
         },
         {
-            name: "ohm",
             symbol: "Ω",
             multiplier: 1,
             definition: {
@@ -188,7 +141,6 @@ var UNITS = {
             }
         },
         {
-            name: "siemens",
             symbol: "S",
             multiplier: 1,
             definition: {
@@ -204,7 +156,6 @@ var UNITS = {
             }
         },
         {
-            name: "weber",
             symbol: "Wb",
             multiplier: 1,
             definition: {
@@ -220,7 +171,6 @@ var UNITS = {
             }
         },
         {
-            name: "tesla",
             symbol: "T",
             multiplier: 1,
             definition: {
@@ -236,7 +186,6 @@ var UNITS = {
             }
         },
         {
-            name: "henry",
             symbol: "H",
             multiplier: 1,
             definition: {
@@ -252,7 +201,6 @@ var UNITS = {
             }
         },
         {
-            name: "lumen",
             symbol: "lm",
             multiplier: 1,
             definition: {
@@ -268,7 +216,6 @@ var UNITS = {
             }
         },
         {
-            name: "lux",
             symbol: "lx",
             multiplier: 1,
             definition: {
@@ -284,7 +231,6 @@ var UNITS = {
             }
         },
         {
-            name: "gray",
             symbol: "Gy",
             multiplier: 1,
             definition: {
@@ -299,12 +245,10 @@ var UNITS = {
                 sr: 0
             },
             "alternative": {
-                name: "sievert",
                 symbol: "Sv"
             }
         },
         {
-            name: "katal",
             symbol: "kat",
             multiplier: 1,
             definition: {
@@ -322,122 +266,98 @@ var UNITS = {
     ],
     "prefixes": [
         {
-            name: "quetta",
             symbol: "Q",
             exponent: 30
         },
         {
-            name: "ronna",
             symbol: "R",
             exponent: 27
         },
         {
-            name: "yotta",
             symbol: "Y",
             exponent: 24
         },
         {
-            name: "zetta",
             symbol: "Z",
             exponent: 21
         },
         {
-            name: "exa",
             symbol: "E",
             exponent: 18
         },
         {
-            name: "peta",
             symbol: "P",
             exponent: 15
         },
         {
-            name: "tera",
             symbol: "T",
             exponent: 12
         },
         {
-            name: "giga",
             symbol: "G",
             exponent: 9
         },
         {
-            name: "mega",
             symbol: "M",
             exponent: 6
         },
         {
-            name: "kilo",
             symbol: "k",
             exponent: 3
         },
         {
-            name: "hecto",
             symbol: "h",
             exponent: 2
         },
         {
-            name: "deca",
             symbol: "da",
             exponent: 1
         },
         {
-            name: "deci",
             symbol: "d",
             exponent: -1
         },
         {
-            name: "centi",
             symbol: "c",
             exponent: -2
         },
         {
-            name: "milli",
             symbol: "m",
             exponent: -3
         },
         {
-            name: "micro",
             symbol: "µ",
             exponent: -6
         },
         {
-            name: "nano",
             symbol: "n",
             exponent: -9
         },
         {
-            name: "pico",
             symbol: "p",
             exponent: -12
         },
         {
-            name: "femto",
             symbol: "f",
             exponent: -15
         },
         {
-            name: "atto",
             symbol: "a",
             exponent: -18
         },
         {
-            name: "zepto",
             symbol: "z",
             exponent: -21
         },
         {
-            name: "yocto",
             symbol: "y",
             exponent: -24
         },
         {
-            name: "ronto",
             symbol: "r",
             exponent: -27
         },
         {
-            name: "quecto",
             symbol: "q",
             exponent: -30
         }
