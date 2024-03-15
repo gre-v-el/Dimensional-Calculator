@@ -193,62 +193,45 @@ function reduce_unit(unit) {
     return unit;
 }
 function si_to_cs(si, multiplier) {
+    // in fact these are powers of the respective SI units like m/s and joules
+    var c = si.m - 2 * si.kg;
+    var cal = si.kg;
+    var C4 = -si.m - si.s + si.A;
+    var C = si.A;
+    var deg_C = si.K;
+    var cd = si.cd;
+    var con = si.sr;
+    var cent = si.mol;
+    var cir = si.rad;
     // change the multiplier according to the conversion factors between si and cs
-    multiplier /= Math.pow((Math.PI * (2 - Math.SQRT2)), si.sr);
-    multiplier *= Math.pow(6.02214076e-21, si.mol);
+    // 1 sr = PI(2 - sqrt(2)) con
+    multiplier *= Math.pow((Math.PI * (2 - Math.SQRT2)), si.sr);
+    // 1 mol = (N_A)/100 cent
+    multiplier *= Math.pow(6.02214076e21, si.mol);
+    // 1 rad = (1/2PI) cir
     multiplier /= Math.pow((2 * Math.PI), si.rad);
+    // 1 m/s = 1/299792458 c
+    multiplier /= Math.pow(299792458, c);
+    // 1 J = 1/4.184 cal
+    multiplier /= Math.pow(4.184, cal);
+    // 1 Hz = 1/261.62556530059863467785 C4
+    multiplier /= Math.pow(261.62556530059863467785, C4);
     var unit = {
         multiplier: multiplier,
         definition: {
-            kg: 0,
-            m: 0,
-            s: 0,
-            A: 0,
-            K: 0,
-            mol: 0,
-            cd: 0,
-            rad: 0,
-            sr: 0,
+            kg: 0, m: 0, s: 0, A: 0, K: 0,
+            mol: 0, cd: 0, rad: 0, sr: 0,
         },
         compounds: [
-            // the following four require solving a system of four equations
-            {
-                name: "c",
-                power: si.m - si.kg
-            },
-            {
-                name: "cal",
-                power: si.kg / 2
-            },
-            {
-                name: "C4",
-                power: si.m - si.s - 2 * si.kg - si.A
-            },
-            {
-                name: "C",
-                power: si.A
-            },
-            // these are trivial
-            {
-                name: "deg_C",
-                power: si.K
-            },
-            {
-                name: "cd",
-                power: si.cd
-            },
-            {
-                name: "con",
-                power: si.sr
-            },
-            {
-                name: "cent",
-                power: si.mol
-            },
-            {
-                name: "cir",
-                power: si.rad
-            }
+            { name: "c", power: c },
+            { name: "cal", power: cal },
+            { name: "C₄", power: C4 },
+            { name: "C", power: C },
+            { name: "°C", power: deg_C },
+            { name: "cd", power: cd },
+            { name: "con", power: con },
+            { name: "cent", power: cent },
+            { name: "cir", power: cir },
         ],
     };
     unit.compounds = unit.compounds.filter(function (c) { return c.power != 0; });

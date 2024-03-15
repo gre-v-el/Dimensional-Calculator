@@ -188,67 +188,52 @@ function reduce_unit(unit: Unit): Unit {
 }
 
 function si_to_cs(si: SiDefinition, multiplier: number): Unit {
+	// in fact these are powers of the respective SI units like m/s and joules
+	let c = si.m - 2*si.kg;
+	let cal = si.kg;
+	let C4 = -si.m - si.s + si.A;
+	let C = si.A;
+	let deg_C = si.K;
+	let cd = si.cd;
+	let con = si.sr;
+	let cent = si.mol;
+	let cir = si.rad;
+
 	// change the multiplier according to the conversion factors between si and cs
-	multiplier /= (Math.PI * (2 - Math.SQRT2)) ** si.sr;
-	multiplier *= 6.02214076e-21 ** si.mol;
+	
+	// 1 sr = PI(2 - sqrt(2)) con
+	multiplier *= (Math.PI * (2 - Math.SQRT2)) ** si.sr;
+	// 1 mol = (N_A)/100 cent
+	multiplier *= 6.02214076e21 ** si.mol;
+	// 1 rad = (1/2PI) cir
 	multiplier /= (2*Math.PI) ** si.rad;
+	// 1 m/s = 1/299792458 c
+	multiplier /= 299792458 ** c;
+	// 1 J = 1/4.184 cal
+	multiplier /= 4.184 ** cal;
+	// 1 Hz = 1/261.62556530059863467785 C4
+	multiplier /= 261.62556530059863467785 ** C4;
 
 	let unit = {
 		multiplier: multiplier,
 		definition: {
-			kg: 0,
-			m: 0,
-			s: 0,
-			A: 0,
-			K: 0,
-			mol: 0,
-			cd: 0,
-			rad: 0,
-			sr: 0,
+			kg: 0, m: 0, s: 0, A: 0, K: 0, 
+			mol: 0, cd: 0, rad: 0, sr: 0,
 		},
 		compounds: [
-			// the following four require solving a system of four equations
-			{
-				name: "c",
-				power: si.m - si.kg
-			},
-			{
-				name: "cal",
-				power: si.kg / 2
-			},
-			{
-				name: "C4",
-				power: si.m - si.s - 2*si.kg - si.A
-			},
-			{
-				name: "C",
-				power: si.A
-			},
-			// these are trivial
-			{
-				name: "deg_C",
-				power: si.K
-			},
-			{
-				name: "cd",
-				power: si.cd
-			},
-			{
-				name: "con",
-				power: si.sr
-			},
-			{
-				name: "cent",
-				power: si.mol
-			},
-			{
-				name: "cir",
-				power: si.rad
-			}
+			{name: "c", power: c},
+			{name: "cal", power: cal},
+			{name: "C₄", power: C4},
+			{name: "C", power: C},
+			{name: "°C", power: deg_C},
+			{name: "cd", power: cd},
+			{name: "con", power: con},
+			{name: "cent", power: cent},
+			{name: "cir", power: cir}, 
 		],
 	};
 
-	unit. compounds = unit.compounds.filter((c) => c.power != 0);
+	unit.compounds = unit.compounds.filter((c) => c.power != 0);
 
 	return unit;
 }
