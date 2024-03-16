@@ -22,10 +22,8 @@ function handle_input() {
 		let pure_si_unit = {...unit};
 		render_unit(unit, math_si, false);
 		
-		unit = reduce_unit(unit);
+		unit = reduce_unit_greedy(unit);
 		render_unit(unit, math_simplified, true);
-
-		render_unit(unit, math_cs, false);
 
 		let cs_unit = si_to_cs(pure_si_unit.definition, pure_si_unit.multiplier);
 		render_unit(cs_unit, math_cs, false);
@@ -33,6 +31,7 @@ function handle_input() {
 	else {
 		math_si.style.opacity = "0";
 		math_simplified.style.opacity = "0";
+		math_cs.style.opacity = "0";
 	}
 }
 

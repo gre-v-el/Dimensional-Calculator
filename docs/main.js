@@ -28,15 +28,15 @@ function handle_input() {
         expand_si(unit);
         var pure_si_unit = __assign({}, unit);
         render_unit(unit, math_si, false);
-        unit = reduce_unit(unit);
+        unit = reduce_unit_greedy(unit);
         render_unit(unit, math_simplified, true);
-        render_unit(unit, math_cs, false);
         var cs_unit = si_to_cs(pure_si_unit.definition, pure_si_unit.multiplier);
         render_unit(cs_unit, math_cs, false);
     }
     else {
         math_si.style.opacity = "0";
         math_simplified.style.opacity = "0";
+        math_cs.style.opacity = "0";
     }
 }
 input_box.addEventListener("input", handle_input);

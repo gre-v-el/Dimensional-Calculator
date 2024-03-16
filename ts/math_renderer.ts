@@ -53,7 +53,7 @@ function populate_mrow(mrow: MathMLElement, units: Factor[]) {
 			if(u.error) unit.setAttribute("style", "color: red;");
 			mrow.appendChild(unit);
 		}
-		else if(((1 / parseFloat(u.power)) % 1).toFixed(3) == "0.000") {
+		else if(Number(u.power) < 1 && ((1 / Number(u.power)) % 1).toFixed(3) == "0.000") {
 			let degree = Math.round(1 / parseFloat(u.power)).toString();
 
 			let root = degree == "2" ? createMathElement("msqrt") : createMathElement("mroot");
@@ -91,6 +91,19 @@ function create_floating_point(value: number): MathMLElement {
 function render_multiplier(f: Fraction, multiplier: number, output: MathMLElement, use_prefixes: boolean) {
 	let mult: number = Math.abs(multiplier);
 	
+	if(mult == 0)  {
+		output.appendChild(createMathElementContent("mn", "0"));
+		return;
+	}
+	if(mult == Number.POSITIVE_INFINITY) {
+		output.appendChild(createMathElementContent("mo", "∞"));
+		return;
+	}
+	if(mult == Number.NEGATIVE_INFINITY) {
+		output.appendChild(createMathElementContent("mo", "-∞"));
+		return;
+	}
+
 	let added = false;
 	if(f.denumerator.length == 0 && 
 	   f.numerator.length == 1 && 
@@ -104,17 +117,17 @@ function render_multiplier(f: Fraction, multiplier: number, output: MathMLElemen
 		let mult_digit = mult / 10 ** exp;
 
 		let prefix = UNITS.prefixes.find((p) => p.exponent == exp);
-
-		if(mult_digit.toFixed(3) != "1.000" || multiplier < 0) {
-			output.appendChild(create_floating_point(mult_digit * Math.sign(multiplier)));
-			output.appendChild(createMathElementContent("mo", "·"));
-		}
+		
 		if(prefix) {
+			if(mult_digit.toFixed(3) != "1.000" || multiplier < 0) {
+				output.appendChild(create_floating_point(mult_digit * Math.sign(multiplier)));
+				output.appendChild(createMathElementContent("mo", "·"));
+			}
 			f.numerator[0].value = prefix.symbol + f.numerator[0].value;
 			added = true;
 		}
 	}
-	else if(!added) {
+	if(!added) {
 		let exp = Math.floor(Math.log10(mult));
 		let mult_digit = mult / 10 ** exp;
 		
@@ -168,7 +181,7 @@ function render_unit(v: Unit, output: MathMLElement, use_prefixes: boolean) {
 	if(f.numerator.length == 0) f.numerator.push({value: "1", power: "1", error: false});
 
 	let multiplier = v.multiplier;
-	if(f.denumerator.length == 0 && f.numerator.length == 1 && f.numerator[0].value == "kg") {
+	if(use_prefixes && f.denumerator.length == 0 && f.numerator.length == 1 && f.numerator[0].value == "kg" && f.numerator[0].power == "1") {
 		f.numerator[0].value = "g";
 		multiplier *= 1000;
 	}

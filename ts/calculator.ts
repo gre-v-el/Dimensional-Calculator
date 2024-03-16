@@ -86,7 +86,9 @@ function expand_si(u: Unit) {
 
 function single_heuristic(n: number): number {
 	n = Math.abs(n);
-	return n == 0 ? 0 : Math.max(1 / n, n);
+	// if(n >= 1) return 1 + (n-1) * 0.1;
+	// return n==0? 0 : 1/n;
+	return n == 0? 0 : (Math.max(n, 1/n));
 }
 
 function heuristic(unit: Unit): number {
@@ -101,7 +103,7 @@ function heuristic(unit: Unit): number {
 	return sum;
 }
 
-function divide(u1: Unit, u2: DerivedUnit): Unit {
+function extract(u1: Unit, u2: DerivedUnit, times: number): Unit {
 	let result: Unit = {
 		multiplier: u1.multiplier,
 		definition: {
@@ -120,72 +122,38 @@ function divide(u1: Unit, u2: DerivedUnit): Unit {
 
 	for(let k in u1.definition) {
 		// @ts-ignore
-		result.definition[k] = u1.definition[k] - u2.definition[k];
+		result.definition[k] = u1.definition[k] - times*u2.definition[k];
 	}
+
+	let found = result.compounds.find((c) => c.name == u2.symbol);
+	if(found) found.power += times;
+	else result.compounds.push({name: u2.symbol, power: times});
 
 	return result;
 }
 
-function multiply(u1: Unit, u2: DerivedUnit): Unit {
-	let result: Unit = {
-		multiplier: u1.multiplier,
-		definition: {
-			kg: 0,
-			m: 0,
-			s: 0,
-			A: 0,
-			K: 0,
-			mol: 0,
-			cd: 0,
-			rad: 0,
-			sr: 0,
-		},
-		compounds: u1.compounds.slice(),
-	};
-
-	for(let k in u1.definition) {
-		// @ts-ignore
-		result.definition[k] = u1.definition[k] + u2.definition[k];
-	}
-
-	return result;
-}
-
-function reduce_unit(unit: Unit): Unit {
+function reduce_unit_greedy(unit: Unit): Unit {
 	while(true) {
-		let best: DerivedUnit | undefined;
 		let best_unit: Unit | undefined;
-		let mult = true;
 		let best_dist = heuristic(unit);
 
 		for(let compound of UNITS.derived) {
-			let d = divide(unit, compound);
-			let m = multiply(unit, compound);
+			let d = extract(unit, compound, 1);
+			let m = extract(unit, compound, -1);
 			let hd = heuristic(d);
 			let hm = heuristic(m);
 			if(hd < best_dist) {
-				best = compound;
 				best_unit = d;
 				best_dist = hd;
-				mult = false;
 			}
 			if(hm < best_dist) {
-				best = compound;
 				best_unit = m;
 				best_dist = hm;
-				mult = true;
 			}
 		}
 
-		if(best) {
-			unit = best_unit!;
-			let found = unit.compounds.find((c) => c.name == best!.symbol);
-			if(found) found.power += mult ? -1 : 1;
-			else unit.compounds.push({name: best.symbol, power: mult ? -1 : 1});
-		}
-		else {
-			break;
-		}
+		if(best_unit) unit = best_unit!;
+		else break;
 	}
 
 	return unit;

@@ -49,7 +49,7 @@ function populate_mrow(mrow, units) {
                 unit.setAttribute("style", "color: red;");
             mrow.appendChild(unit);
         }
-        else if (((1 / parseFloat(u.power)) % 1).toFixed(3) == "0.000") {
+        else if (Number(u.power) < 1 && ((1 / Number(u.power)) % 1).toFixed(3) == "0.000") {
             var degree = Math.round(1 / parseFloat(u.power)).toString();
             var root = degree == "2" ? createMathElement("msqrt") : createMathElement("mroot");
             root.appendChild(createMathElementContent("mi", u.value));
@@ -80,6 +80,18 @@ function create_floating_point(value) {
 }
 function render_multiplier(f, multiplier, output, use_prefixes) {
     var mult = Math.abs(multiplier);
+    if (mult == 0) {
+        output.appendChild(createMathElementContent("mn", "0"));
+        return;
+    }
+    if (mult == Number.POSITIVE_INFINITY) {
+        output.appendChild(createMathElementContent("mo", "∞"));
+        return;
+    }
+    if (mult == Number.NEGATIVE_INFINITY) {
+        output.appendChild(createMathElementContent("mo", "-∞"));
+        return;
+    }
     var added = false;
     if (f.denumerator.length == 0 &&
         f.numerator.length == 1 &&
@@ -90,16 +102,16 @@ function render_multiplier(f, multiplier, output, use_prefixes) {
         exp_1 = Math.floor(exp_1 / 3) * 3;
         var mult_digit = mult / Math.pow(10, exp_1);
         var prefix = UNITS.prefixes.find(function (p) { return p.exponent == exp_1; });
-        if (mult_digit.toFixed(3) != "1.000" || multiplier < 0) {
-            output.appendChild(create_floating_point(mult_digit * Math.sign(multiplier)));
-            output.appendChild(createMathElementContent("mo", "·"));
-        }
         if (prefix) {
+            if (mult_digit.toFixed(3) != "1.000" || multiplier < 0) {
+                output.appendChild(create_floating_point(mult_digit * Math.sign(multiplier)));
+                output.appendChild(createMathElementContent("mo", "·"));
+            }
             f.numerator[0].value = prefix.symbol + f.numerator[0].value;
             added = true;
         }
     }
-    else if (!added) {
+    if (!added) {
         var exp = Math.floor(Math.log10(mult));
         var mult_digit = mult / Math.pow(10, exp);
         if (mult_digit.toFixed(3) != "1.000" || multiplier < 0) {
@@ -150,7 +162,7 @@ function render_unit(v, output, use_prefixes) {
     if (f.numerator.length == 0)
         f.numerator.push({ value: "1", power: "1", error: false });
     var multiplier = v.multiplier;
-    if (f.denumerator.length == 0 && f.numerator.length == 1 && f.numerator[0].value == "kg") {
+    if (use_prefixes && f.denumerator.length == 0 && f.numerator.length == 1 && f.numerator[0].value == "kg" && f.numerator[0].power == "1") {
         f.numerator[0].value = "g";
         multiplier *= 1000;
     }

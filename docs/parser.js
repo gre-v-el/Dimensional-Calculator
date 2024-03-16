@@ -44,7 +44,7 @@ function validate_fraction(f) {
             var u = a_2[_e];
             if (!is_unit_good(u.value)) {
                 u.error = true;
-                f.error = "I don't know these units (" + u.value + ")";
+                f.error = "Unknown units";
             }
         }
     }
@@ -56,8 +56,8 @@ function parse_to_fraction(input) {
     // split numbers and units
     input = input.replace(/(\d+)([a-zA-Z]+)/g, "$1 $2");
     // replace untypable symbols
-    input = input.replace(/ohm|Ohm/, "Ω");
-    input = input.replace("micro", "µ");
+    input = input.replace(/ohm|Ohm/g, "Ω");
+    input = input.replace(/micro/g, "µ");
     var breaks = [" ", "*", "/", "^"];
     var f = {
         numerator: [],
