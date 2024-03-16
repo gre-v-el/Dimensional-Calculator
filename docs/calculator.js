@@ -90,7 +90,7 @@ function expand_si(u) {
 }
 function single_heuristic(n) {
     n = Math.abs(n);
-    return n >= 1 || n == 0 ? n : 1 / n;
+    return n == 0 ? 0 : Math.max(1 / n, n);
 }
 function heuristic(unit) {
     var sum = 0;
@@ -106,7 +106,7 @@ function heuristic(unit) {
 }
 function divide(u1, u2) {
     var result = {
-        multiplier: u1.multiplier / u2.multiplier,
+        multiplier: u1.multiplier,
         definition: {
             kg: 0,
             m: 0,
@@ -128,7 +128,7 @@ function divide(u1, u2) {
 }
 function multiply(u1, u2) {
     var result = {
-        multiplier: u1.multiplier * u2.multiplier,
+        multiplier: u1.multiplier,
         definition: {
             kg: 0,
             m: 0,

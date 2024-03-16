@@ -35,7 +35,6 @@ type Unit = {
 
 type DerivedUnit = {
 	symbol: string,
-	multiplier: number,
 	definition: SiDefinition,
 	alternative?: {
 		symbol: string
@@ -49,7 +48,6 @@ type Units = {
 		symbol: string,
 		exponent: number
 	}[],
-	CCC: DerivedUnit[],
 };
 
 
@@ -59,7 +57,6 @@ let UNITS: Units = {
 	derived: [
 		{
 			symbol: "Hz",
-			multiplier: 1,
 			definition: {
 				s: -1,
 				kg: 0,
@@ -77,7 +74,6 @@ let UNITS: Units = {
 		},
 		{
 			symbol: "N",
-			multiplier: 1,
 			definition: {
 				kg: 1,
 				m: 1,
@@ -92,7 +88,6 @@ let UNITS: Units = {
 		},
 		{
 			symbol: "Pa",
-			multiplier: 1,
 			definition: {
 				kg: 1,
 				m: -1,
@@ -107,7 +102,6 @@ let UNITS: Units = {
 		},
 		{
 			symbol: "J",
-			multiplier: 1,
 			definition: {
 				kg: 1,
 				m: 2,
@@ -122,7 +116,6 @@ let UNITS: Units = {
 		},
 		{
 			symbol: "W",
-			multiplier: 1,
 			definition: {
 				kg: 1,
 				m: 2,
@@ -137,7 +130,6 @@ let UNITS: Units = {
 		},
 		{
 			symbol: "C",
-			multiplier: 1,
 			definition: {
 				s: 1,
 				A: 1,
@@ -152,7 +144,6 @@ let UNITS: Units = {
 		},
 		{
 			symbol: "V",
-			multiplier: 1,
 			definition: {
 				kg: 1,
 				m: 2,
@@ -167,7 +158,6 @@ let UNITS: Units = {
 		},
 		{
 			symbol: "F",
-			multiplier: 1,
 			definition: {
 				kg: -1,
 				m: -2,
@@ -182,7 +172,6 @@ let UNITS: Units = {
 		},
 		{
 			symbol: "Ω",
-			multiplier: 1,
 			definition: {
 				kg: 1,
 				m: 2,
@@ -197,7 +186,6 @@ let UNITS: Units = {
 		},
 		{
 			symbol: "S",
-			multiplier: 1,
 			definition: {
 				kg: -1,
 				m: -2,
@@ -212,7 +200,6 @@ let UNITS: Units = {
 		},
 		{
 			symbol: "Wb",
-			multiplier: 1,
 			definition: {
 				kg: 1,
 				m: 2,
@@ -227,7 +214,6 @@ let UNITS: Units = {
 		},
 		{
 			symbol: "T",
-			multiplier: 1,
 			definition: {
 				kg: 1,
 				s: -2,
@@ -242,7 +228,6 @@ let UNITS: Units = {
 		},
 		{
 			symbol: "H",
-			multiplier: 1,
 			definition: {
 				kg: 1,
 				m: 2,
@@ -257,7 +242,6 @@ let UNITS: Units = {
 		},
 		{
 			symbol: "lm",
-			multiplier: 1,
 			definition: {
 				cd: 1,
 				sr: 1,
@@ -272,7 +256,6 @@ let UNITS: Units = {
 		},
 		{
 			symbol: "lx",
-			multiplier: 1,
 			definition: {
 				m: -2,
 				cd: 1,
@@ -287,7 +270,6 @@ let UNITS: Units = {
 		},
 		{
 			symbol: "Gy",
-			multiplier: 1,
 			definition: {
 				m: 2,
 				s: -2,
@@ -305,7 +287,6 @@ let UNITS: Units = {
 		},
 		{
 			symbol: "kat",
-			multiplier: 1,
 			definition: {
 				s: -1,
 				mol: 1,
@@ -416,112 +397,5 @@ let UNITS: Units = {
 			symbol: "q",
 			exponent: -30
 		}
-	],
-	CCC: [
-		{
-			symbol: "c",
-			multiplier: 299792458,
-			definition: {
-				kg: 0,
-				m: 1,
-				s: -1,
-				A: 0,
-				K: 0,
-				mol: 0,
-				cd: 0,
-				rad: 0,
-				sr: 0
-			}
-		},
-		{
-			symbol: "cal",
-			multiplier: 4.184,
-			definition: {
-				kg: 1,
-				m: 2,
-				s: -2,
-				A: 0,
-				K: 0,
-				mol: 0,
-				cd: 0,
-				rad: 0,
-				sr: 0
-			}
-		},
-		{
-			symbol: "C₄",
-			multiplier: 261.62556530059863467785,
-			definition: {
-				kg: 0,
-				m: 0,
-				s: -1,
-				A: 0,
-				K: 0,
-				mol: 0,
-				cd: 0,
-				rad: 0,
-				sr: 0
-			}
-		},
-		{
-			symbol: "°C",
-			multiplier: 1,
-			definition: {
-				kg: 0,
-				m: 0,
-				s: 0,
-				A: 0,
-				K: 1,
-				mol: 0,
-				cd: 0,
-				rad: 0,
-				sr: 0
-			}
-		},
-		{
-			symbol: "cd",
-			multiplier: 1,
-			definition: {
-				kg: 0,
-				m: 0,
-				s: 0,
-				A: 0,
-				K: 0,
-				mol: 0,
-				cd: 1,
-				rad: 0,
-				sr: 0
-			}
-		},
-		{
-			symbol: "C",
-			multiplier: 1,
-			definition: {
-				kg: 0,
-				m: 0,
-				s: 1,
-				A: 1,
-				K: 0,
-				mol: 0,
-				cd: 0,
-				rad: 0,
-				sr: 0
-			}
-		},
-		{
-			symbol: "Cent",
-			multiplier: 1.66053907e-22,
-			definition: {
-				kg: 0,
-				m: 0,
-				s: 0,
-				A: 0,
-				K: 0,
-				mol: 1,
-				cd: 0,
-				rad: 0,
-				sr: 0
-			}
-		},
 	]
 }

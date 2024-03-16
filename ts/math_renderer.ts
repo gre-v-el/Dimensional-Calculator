@@ -53,6 +53,13 @@ function populate_mrow(mrow: MathMLElement, units: Factor[]) {
 			if(u.error) unit.setAttribute("style", "color: red;");
 			mrow.appendChild(unit);
 		}
+		else if(((1 / parseFloat(u.power)) % 1).toFixed(3) == "0.000") {
+			let unit = createMathElementContent("mn", u.value);
+			let root = createMathElement("mroot");
+			root.appendChild(unit);
+			root.appendChild(createMathElementContent("mn", Math.round(1 / parseFloat(u.power)).toString()));
+			mrow.appendChild(root);
+		}
 		else {
 			let unit = createMathElement("msup");
 			let base = createMathElementContent("mi", u.value);
@@ -79,6 +86,8 @@ function create_floating_point(value: number): MathMLElement {
 }
 
 function render_multiplier(f: Fraction, multiplier: number, output: MathMLElement, use_prefixes: boolean) {
+	let mult: number = Math.abs(multiplier);
+	
 	let added = false;
 	if(use_prefixes && 
 		f.denumerator.length == 0 && 
@@ -86,14 +95,14 @@ function render_multiplier(f: Fraction, multiplier: number, output: MathMLElemen
 		f.numerator[0].power == "1" && 
 		f.numerator[0].value != "1") 
 	{
-		let exp = Math.floor(Math.log10(multiplier));
+		let exp = Math.floor(Math.log10(mult));
 		exp = Math.floor(exp / 3) * 3;
-		let mult = multiplier / 10 ** exp;
+		let mult_digit = mult / 10 ** exp;
 
 		let prefix = UNITS.prefixes.find((p) => p.exponent == exp);
 
-		if(mult.toFixed(3) != "1.000") {
-			output.appendChild(create_floating_point(mult));
+		if(mult_digit.toFixed(3) != "1.000" || multiplier < 0) {
+			output.appendChild(create_floating_point(mult_digit * Math.sign(multiplier)));
 			output.appendChild(createMathElementContent("mo", "·"));
 		}
 		if(prefix) {
@@ -102,11 +111,11 @@ function render_multiplier(f: Fraction, multiplier: number, output: MathMLElemen
 		}
 	}
 	else if(!added) {
-		let exp = Math.floor(Math.log10(multiplier));
-		let mult = multiplier / 10 ** exp;
+		let exp = Math.floor(Math.log10(mult));
+		let mult_digit = mult / 10 ** exp;
 		
-		if(mult.toFixed(3) != "1.000") {
-			output.appendChild(create_floating_point(mult));
+		if(mult_digit.toFixed(3) != "1.000" || multiplier < 0) {
+			output.appendChild(create_floating_point(mult_digit * Math.sign(multiplier)));
 			output.appendChild(createMathElementContent("mo", "·"));
 		}
 		if(exp != 0) {
@@ -154,7 +163,7 @@ function render_unit(v: Unit, output: MathMLElement, use_prefixes: boolean) {
 
 	if(f.numerator.length == 0) f.numerator.push({value: "1", power: "1", error: false});
 
-	if(v.multiplier.toFixed(3) != "1.000") {
+	if(Math.abs(v.multiplier).toFixed(3) != "1.000") {
 		render_multiplier(f, v.multiplier, output, use_prefixes);
 	}
 
