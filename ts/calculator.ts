@@ -75,6 +75,10 @@ function expand_si(u: Unit) {
 				u.definition[k] += derived.definition[k] * c.power;
 			}
 		}
+		else if(c.name == "g") {
+			u.definition.kg += c.power;
+			u.multiplier *= 0.001 ** c.power;
+		}
 	}
 
 	u.compounds = [];

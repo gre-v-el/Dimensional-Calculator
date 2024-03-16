@@ -36,7 +36,7 @@ function handle_input() {
 	}
 }
 
-input_box.addEventListener("keyup", handle_input);
+input_box.addEventListener("input", handle_input);
 handle_input();
 
 c_letter.addEventListener("click", () => {

@@ -50,10 +50,11 @@ function populate_mrow(mrow, units) {
             mrow.appendChild(unit);
         }
         else if (((1 / parseFloat(u.power)) % 1).toFixed(3) == "0.000") {
-            var unit = createMathElementContent("mn", u.value);
-            var root = createMathElement("mroot");
-            root.appendChild(unit);
-            root.appendChild(createMathElementContent("mn", Math.round(1 / parseFloat(u.power)).toString()));
+            var degree = Math.round(1 / parseFloat(u.power)).toString();
+            var root = degree == "2" ? createMathElement("msqrt") : createMathElement("mroot");
+            root.appendChild(createMathElementContent("mi", u.value));
+            if (degree != "2")
+                root.appendChild(createMathElementContent("mn", degree));
             mrow.appendChild(root);
         }
         else {
@@ -80,11 +81,11 @@ function create_floating_point(value) {
 function render_multiplier(f, multiplier, output, use_prefixes) {
     var mult = Math.abs(multiplier);
     var added = false;
-    if (use_prefixes &&
-        f.denumerator.length == 0 &&
+    if (f.denumerator.length == 0 &&
         f.numerator.length == 1 &&
         f.numerator[0].power == "1" &&
-        f.numerator[0].value != "1") {
+        f.numerator[0].value != "1" &&
+        (use_prefixes || f.numerator[0].value == "g")) {
         var exp_1 = Math.floor(Math.log10(mult));
         exp_1 = Math.floor(exp_1 / 3) * 3;
         var mult_digit = mult / Math.pow(10, exp_1);
@@ -148,8 +149,13 @@ function render_unit(v, output, use_prefixes) {
     }
     if (f.numerator.length == 0)
         f.numerator.push({ value: "1", power: "1", error: false });
-    if (Math.abs(v.multiplier).toFixed(3) != "1.000") {
-        render_multiplier(f, v.multiplier, output, use_prefixes);
+    var multiplier = v.multiplier;
+    if (f.denumerator.length == 0 && f.numerator.length == 1 && f.numerator[0].value == "kg") {
+        f.numerator[0].value = "g";
+        multiplier *= 1000;
+    }
+    if (Math.abs(multiplier).toFixed(3) != "1.000") {
+        render_multiplier(f, multiplier, output, use_prefixes);
     }
     render_fraction(f, output, undefined, false);
 }

@@ -39,7 +39,7 @@ function handle_input() {
         math_simplified.style.opacity = "0";
     }
 }
-input_box.addEventListener("keyup", handle_input);
+input_box.addEventListener("input", handle_input);
 handle_input();
 c_letter.addEventListener("click", function () {
     if (c_clicks >= 7)

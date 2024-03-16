@@ -81,6 +81,10 @@ function expand_si(u) {
                 u.definition[k] += derived.definition[k] * c.power;
             }
         }
+        else if (c.name == "g") {
+            u.definition.kg += c.power;
+            u.multiplier *= Math.pow(0.001, c.power);
+        }
     };
     for (var _i = 0, _a = u.compounds; _i < _a.length; _i++) {
         var c = _a[_i];

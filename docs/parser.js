@@ -1,7 +1,8 @@
 "use strict";
 function is_basic_unit(u) {
     return UNITS.SI.includes(u) ||
-        UNITS.derived.some(function (d) { return d.symbol == u; });
+        UNITS.derived.some(function (d) { return d.symbol == u; }) ||
+        u == "g";
 }
 function is_unit_good(u) {
     if (is_basic_unit(u) || !isNaN(Number(u)))
@@ -52,6 +53,11 @@ function parse_to_fraction(input) {
     input = input.trim();
     input = input.split(/(\s+)/).join(" ");
     input += " ";
+    // split numbers and units
+    input = input.replace(/(\d+)([a-zA-Z]+)/g, "$1 $2");
+    // replace untypable symbols
+    input = input.replace(/ohm|Ohm/, "Ω");
+    input = input.replace("micro", "µ");
     var breaks = [" ", "*", "/", "^"];
     var f = {
         numerator: [],
@@ -72,8 +78,6 @@ function parse_to_fraction(input) {
         if (buf_start != -1 && i > buf_start) {
             var item = input.substring(buf_start, i);
             buf_start = -1;
-            if (item == "Ohm" || item == "ohm")
-                item = "Ω";
             if (in_pow) {
                 in_pow = false;
                 if (current.length == 0) {

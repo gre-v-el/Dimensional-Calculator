@@ -1,6 +1,7 @@
 function is_basic_unit(u: string): boolean {
 	return UNITS.SI.includes(u) ||
-           UNITS.derived.some((d) => d.symbol == u);
+           UNITS.derived.some((d) => d.symbol == u) ||
+		   u == "g";
 }
 
 function is_unit_good(u: string): boolean {
@@ -53,6 +54,13 @@ function parse_to_fraction(input: string): Fraction {
 	input = input.split(/(\s+)/).join(" ");
 	input += " ";
 
+	// split numbers and units
+	input = input.replace(/(\d+)([a-zA-Z]+)/g, "$1 $2");
+
+	// replace untypable symbols
+	input = input.replace(/ohm|Ohm/, "Ω");
+	input = input.replace("micro", "µ");
+
 	let breaks = [" ", "*", "/", "^"];
 
 	let f: Fraction = {
@@ -78,7 +86,6 @@ function parse_to_fraction(input: string): Fraction {
 		if(buf_start != -1 && i > buf_start) {
 			let item = input.substring(buf_start, i);
 			buf_start = -1;
-			if(item == "Ohm" || item == "ohm") item = "Ω";
 
 			if(in_pow) {
 				in_pow = false;
