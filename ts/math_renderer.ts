@@ -54,7 +54,7 @@ function populate_mrow(mrow: MathMLElement, units: Factor[]) {
 			mrow.appendChild(unit);
 		}
 		else if(Number(u.power) < 1 && ((1 / Number(u.power)) % 1).toFixed(3) == "0.000") {
-			let degree = Math.round(1 / parseFloat(u.power)).toString();
+			let degree = Math.round(1 / Number(u.power)).toString();
 
 			let root = degree == "2" ? createMathElement("msqrt") : createMathElement("mroot");
 

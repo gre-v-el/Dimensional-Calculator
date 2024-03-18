@@ -245,6 +245,112 @@ var UNITS = {
                 rad: 0,
                 sr: 0
             }
+        },
+        /// CCC
+        {
+            symbol: "c",
+            definition: {
+                s: -1,
+                m: 1,
+                kg: 0,
+                A: 0,
+                K: 0,
+                mol: 0,
+                cd: 0,
+                rad: 0,
+                sr: 0
+            },
+            ccc_mult: 299792458
+        },
+        {
+            symbol: "cal",
+            definition: {
+                kg: 1,
+                m: 2,
+                s: -2,
+                A: 0,
+                K: 0,
+                mol: 0,
+                cd: 0,
+                rad: 0,
+                sr: 0
+            },
+            ccc_mult: 4.184
+        },
+        {
+            symbol: "C₄",
+            definition: {
+                s: -1,
+                m: 0,
+                kg: 0,
+                A: 0,
+                K: 0,
+                mol: 0,
+                cd: 0,
+                rad: 0,
+                sr: 0
+            },
+            ccc_mult: 261.62556530059863467785
+        },
+        {
+            symbol: "°C",
+            definition: {
+                K: 1,
+                m: 0,
+                kg: 0,
+                s: 0,
+                A: 0,
+                mol: 0,
+                cd: 0,
+                rad: 0,
+                sr: 0
+            },
+            ccc_mult: 1
+        },
+        {
+            symbol: "con",
+            definition: {
+                sr: 1,
+                m: 0,
+                kg: 0,
+                s: 0,
+                A: 0,
+                K: 0,
+                mol: 0,
+                cd: 0,
+                rad: 0
+            },
+            ccc_mult: 1 / (Math.PI * (2 - Math.SQRT2))
+        },
+        {
+            symbol: "cent",
+            definition: {
+                mol: 1,
+                m: 0,
+                kg: 0,
+                s: 0,
+                A: 0,
+                K: 0,
+                cd: 0,
+                rad: 0,
+                sr: 0
+            },
+            ccc_mult: 1 / 6.02214076e21
+        },
+        {
+            symbol: "cir",
+            definition: {
+                rad: 1,
+                m: 0,
+                kg: 0,
+                s: 0,
+                A: 0,
+                K: 0,
+                mol: 0,
+                cd: 0,
+                sr: 0
+            },
+            ccc_mult: 2 * Math.PI
         }
     ],
     prefixes: [

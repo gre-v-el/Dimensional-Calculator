@@ -1,17 +1,17 @@
-function is_basic_unit(u: string): boolean {
+function is_basic_unit(u: string, ccc_enabled: boolean = false): boolean {
 	return UNITS.SI.includes(u) ||
-           UNITS.derived.some((d) => d.symbol == u) ||
+           UNITS.derived.some((d) => d.symbol == u && (d.ccc_mult == undefined || ccc_enabled)) ||
 		   u == "g";
 }
 
-function is_unit_good(u: string): boolean {
-	if(is_basic_unit(u) || !isNaN(Number(u))) return true;
+function is_unit_good(u: string, ccc_enabled: boolean = false): boolean {
+	if(is_basic_unit(u, ccc_enabled) || !isNaN(Number(u))) return true;
 
 	for(let p of UNITS.prefixes) {
 		if(u.startsWith(p.symbol)) {
 			let candidate = u.substring(p.symbol.length);
 
-			if(is_basic_unit(candidate)) {
+			if(is_basic_unit(candidate, ccc_enabled)) {
 				return true;
 			}
 		}
@@ -20,7 +20,7 @@ function is_unit_good(u: string): boolean {
 	return false;
 }
 
-function validate_fraction(f: Fraction) {
+function validate_fraction(f: Fraction, ccc_enabled: boolean) {
 	if(f.numerator.length == 0) {
 		f.numerator.push({
 			value: "1",
@@ -41,7 +41,7 @@ function validate_fraction(f: Fraction) {
 
 	for(let a of [f.numerator, f.denumerator]) {
 		for(let u of a) {
-			if(!is_unit_good(u.value)) {
+			if(!is_unit_good(u.value, ccc_enabled)) {
 				u.error = true;
 				f.error = "Unknown units";
 			}
@@ -60,6 +60,10 @@ function parse_to_fraction(input: string): Fraction {
 	// replace untypable symbols
 	input = input.replace(/ohm|Ohm/g, "Ω");
 	input = input.replace(/micro/g, "µ");
+	input = input.replace(/C4/g, "C₄");
+	input = input.replace(/deg/g, "°");
+
+	// c cal C4 C degC cd con cent cir
 
 	let breaks = [" ", "*", "/", "^"];
 

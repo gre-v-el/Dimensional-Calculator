@@ -74,6 +74,7 @@ function expand_si(u: Unit) {
 				// @ts-ignore
 				u.definition[k] += derived.definition[k] * c.power;
 			}
+			if(derived.ccc_mult) u.multiplier *= derived.ccc_mult ** c.power;
 		}
 		else if(c.name == "g") {
 			u.definition.kg += c.power;
@@ -93,14 +94,18 @@ function single_heuristic(n: number): number {
 
 function heuristic(unit: Unit): number {
 	let sum = 0;
+	let numerator = false;
 	for(let k in unit.definition) {
 		// @ts-ignore 
 		sum += single_heuristic(unit.definition[k]);
+		// @ts-ignore 
+		if(unit.definition[k] > 0) numerator = true;
 	}
 	for(let c of unit.compounds) {
 		sum += single_heuristic(c.power);
+		if(c.power > 0) numerator = true;
 	}
-	return sum;
+	return sum + (numerator? 0 : 1);
 }
 
 function extract(u1: Unit, u2: DerivedUnit, times: number): Unit {

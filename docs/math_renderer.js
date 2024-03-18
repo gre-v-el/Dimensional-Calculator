@@ -50,7 +50,7 @@ function populate_mrow(mrow, units) {
             mrow.appendChild(unit);
         }
         else if (Number(u.power) < 1 && ((1 / Number(u.power)) % 1).toFixed(3) == "0.000") {
-            var degree = Math.round(1 / parseFloat(u.power)).toString();
+            var degree = Math.round(1 / Number(u.power)).toString();
             var root = degree == "2" ? createMathElement("msqrt") : createMathElement("mroot");
             root.appendChild(createMathElementContent("mi", u.value));
             if (degree != "2")

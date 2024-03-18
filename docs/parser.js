@@ -1,24 +1,26 @@
 "use strict";
-function is_basic_unit(u) {
+function is_basic_unit(u, ccc_enabled) {
+    if (ccc_enabled === void 0) { ccc_enabled = false; }
     return UNITS.SI.includes(u) ||
-        UNITS.derived.some(function (d) { return d.symbol == u; }) ||
+        UNITS.derived.some(function (d) { return d.symbol == u && (d.ccc_mult == undefined || ccc_enabled); }) ||
         u == "g";
 }
-function is_unit_good(u) {
-    if (is_basic_unit(u) || !isNaN(Number(u)))
+function is_unit_good(u, ccc_enabled) {
+    if (ccc_enabled === void 0) { ccc_enabled = false; }
+    if (is_basic_unit(u, ccc_enabled) || !isNaN(Number(u)))
         return true;
     for (var _i = 0, _a = UNITS.prefixes; _i < _a.length; _i++) {
         var p = _a[_i];
         if (u.startsWith(p.symbol)) {
             var candidate = u.substring(p.symbol.length);
-            if (is_basic_unit(candidate)) {
+            if (is_basic_unit(candidate, ccc_enabled)) {
                 return true;
             }
         }
     }
     return false;
 }
-function validate_fraction(f) {
+function validate_fraction(f, ccc_enabled) {
     if (f.numerator.length == 0) {
         f.numerator.push({
             value: "1",
@@ -42,7 +44,7 @@ function validate_fraction(f) {
         var a = _d[_c];
         for (var _e = 0, a_2 = a; _e < a_2.length; _e++) {
             var u = a_2[_e];
-            if (!is_unit_good(u.value)) {
+            if (!is_unit_good(u.value, ccc_enabled)) {
                 u.error = true;
                 f.error = "Unknown units";
             }
@@ -58,6 +60,9 @@ function parse_to_fraction(input) {
     // replace untypable symbols
     input = input.replace(/ohm|Ohm/g, "Ω");
     input = input.replace(/micro/g, "µ");
+    input = input.replace(/C4/g, "C₄");
+    input = input.replace(/deg/g, "°");
+    // c cal C4 C degC cd con cent cir
     var breaks = [" ", "*", "/", "^"];
     var f = {
         numerator: [],

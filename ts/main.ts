@@ -12,7 +12,7 @@ let math_cs = <MathMLElement>document.getElementById("math-cs")!;
 
 function handle_input() {
 	let fraction = parse_to_fraction(input_box.value);
-	validate_fraction(fraction);
+	validate_fraction(fraction, c_clicks >= 7);
 	render_fraction(fraction, math_input, error_span);
 	
 	if(fraction.error.length == 0) {
@@ -51,6 +51,8 @@ c_letter.addEventListener("click", () => {
 		c_background.style.transition = "scale 2s linear";
 		c_background.style.scale = "50";
 		document.body.style.backgroundColor = "#e28f29";
+
+		handle_input();
 
 		setTimeout(() => {
 			c_background.style.display = "none";

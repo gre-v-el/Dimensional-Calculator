@@ -21,7 +21,7 @@ var math_simplified = document.getElementById("math-simplified");
 var math_cs = document.getElementById("math-cs");
 function handle_input() {
     var fraction = parse_to_fraction(input_box.value);
-    validate_fraction(fraction);
+    validate_fraction(fraction, c_clicks >= 7);
     render_fraction(fraction, math_input, error_span);
     if (fraction.error.length == 0) {
         var unit = fract_to_unit(fraction);
@@ -53,6 +53,7 @@ c_letter.addEventListener("click", function () {
         c_background.style.transition = "scale 2s linear";
         c_background.style.scale = "50";
         document.body.style.backgroundColor = "#e28f29";
+        handle_input();
         setTimeout(function () {
             c_background.style.display = "none";
         }, 2000);

@@ -80,6 +80,8 @@ function expand_si(u) {
                 // @ts-ignore
                 u.definition[k] += derived.definition[k] * c.power;
             }
+            if (derived.ccc_mult)
+                u.multiplier *= Math.pow(derived.ccc_mult, c.power);
         }
         else if (c.name == "g") {
             u.definition.kg += c.power;
@@ -100,15 +102,21 @@ function single_heuristic(n) {
 }
 function heuristic(unit) {
     var sum = 0;
+    var numerator = false;
     for (var k in unit.definition) {
         // @ts-ignore 
         sum += single_heuristic(unit.definition[k]);
+        // @ts-ignore 
+        if (unit.definition[k] > 0)
+            numerator = true;
     }
     for (var _i = 0, _a = unit.compounds; _i < _a.length; _i++) {
         var c = _a[_i];
         sum += single_heuristic(c.power);
+        if (c.power > 0)
+            numerator = true;
     }
-    return sum;
+    return sum + (numerator ? 0 : 1);
 }
 function extract(u1, u2, times) {
     var result = {
