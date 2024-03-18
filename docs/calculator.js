@@ -124,7 +124,7 @@ function extract(u1, u2, times) {
             rad: 0,
             sr: 0,
         },
-        compounds: u1.compounds.slice(),
+        compounds: u1.compounds.map(function (c) { return ({ name: c.name, power: c.power }); })
     };
     for (var k in u1.definition) {
         // @ts-ignore
@@ -143,17 +143,14 @@ function reduce_unit_greedy(unit) {
         var best_dist = heuristic(unit);
         for (var _i = 0, _a = UNITS.derived; _i < _a.length; _i++) {
             var compound = _a[_i];
-            var d = extract(unit, compound, 1);
-            var m = extract(unit, compound, -1);
-            var hd = heuristic(d);
-            var hm = heuristic(m);
-            if (hd < best_dist) {
-                best_unit = d;
-                best_dist = hd;
-            }
-            if (hm < best_dist) {
-                best_unit = m;
-                best_dist = hm;
+            for (var _b = 0, _c = [-1, 1]; _b < _c.length; _b++) {
+                var power = _c[_b];
+                var extracted = extract(unit, compound, power);
+                var score = heuristic(extracted);
+                if (score < best_dist) {
+                    best_unit = extracted;
+                    best_dist = score;
+                }
             }
         }
         if (best_unit)

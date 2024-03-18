@@ -117,7 +117,7 @@ function extract(u1: Unit, u2: DerivedUnit, times: number): Unit {
 			rad: 0,
 			sr: 0,
 		},
-		compounds: u1.compounds.slice(),
+		compounds: u1.compounds.map((c) => ({name: c.name, power: c.power}))
 	};
 
 	for(let k in u1.definition) {
@@ -138,17 +138,13 @@ function reduce_unit_greedy(unit: Unit): Unit {
 		let best_dist = heuristic(unit);
 
 		for(let compound of UNITS.derived) {
-			let d = extract(unit, compound, 1);
-			let m = extract(unit, compound, -1);
-			let hd = heuristic(d);
-			let hm = heuristic(m);
-			if(hd < best_dist) {
-				best_unit = d;
-				best_dist = hd;
-			}
-			if(hm < best_dist) {
-				best_unit = m;
-				best_dist = hm;
+			for(let power of [-1, 1]) {
+				let extracted = extract(unit, compound, power);
+				let score = heuristic(extracted);
+				if(score < best_dist) {
+					best_unit = extracted;
+					best_dist = score;
+				}
 			}
 		}
 
