@@ -62,7 +62,7 @@
 		<article style="flex: 1;">
 			<h2>What is this?</h2>
 			<p>
-				This is a tool to analyze and simplify units. It can convert any compound unit to pure SI units and simplify it as much as possible. It accepts simple keyboard input, so you can type "kg*m/s^2" and it will understand it as 
+				This is a tool to analyze and simplify units. It can convert any compound unit to pure SI units and simplify it as much as possible. It accepts simple keyboard input, so you can type "kg*m/s^2" and it will interpret it as 
 				<math>
 					<mfrac>
 						<mrow>
@@ -88,21 +88,21 @@
 			<h4>(ste)radians</h4>
 			<p>
 				Technically, rad and sr are defined as <math><mfrac><mi>m</mi><mi>m</mi></mfrac></math>
-				and <math><mfrac><msup><mi>m</mi><mn>2</mn></msup><msup><mi>m</mi><mn>2</mn></msup></mfrac></math> respectively. This means that they are dimensionless, but they are still treated as units in this calculator. If they were treated as they are defined, they would be simplified to 1, which would be a bit boring.
+				and <math><mfrac><msup><mi>m</mi><mn>2</mn></msup><msup><mi>m</mi><mn>2</mn></msup></mfrac></math> respectively. This means that they are dimensionless, but they are still treated as units in this calculator. If they were treated as they are defined, they would be simplified to 1, which would be misleading.
 			</p>
 			<h4>μkg?!?!</h4>
 			<p>
 				The next shenanigan will require a bit of an introduction, so bear with me:
 			</p>
 			<p>
-				The unit kg is the worst thing there is in the metric system. Think what is the compelling thing in SI? Why did nearly all countries switch to it a few hundred years ago, rejecting other imperial-like systmes? It is the simplicty. Each metric unit of course has a simple conversion to any other. There are no multipliers like 12 or 5280. Everything is a power of 10. SI has to be simple.
+				The unit kg is the worst thing there is in the metric system. Think what is compelling in SI? Why did nearly all countries switch to it a few hundred years ago, rejecting other imperial-like systmes? It is the simplicty. Each metric unit has a simple conversion to any other. There are no multipliers like 12 or 5280. Everything is a power of 10. SI has to be simple.
 			</p>
 			<p>
-				And then there is the kilogram. The only SI unit that includes a prefix. This fact introduced some complications to this calculator. The algorithm actually first treats SI as having the gram as the base unit, and then converts it to kilograms. I still feel it is a bit hacky. The resulting shenanigan is that apart from the proper input: "g", "mg", "Tg", "ng" you can also type "mkg", "μkg", "Mkg" and "pkg" respectively and the calculator will treat them equally. It could be fixed easili with a single line of code, but I decided to leave it as a protest.
+				And then there is the kilogram. The only SI unit that includes a prefix. This fact introduced complications to this calculator. The algorithm actually first treats SI as having the gram as the base unit, and then converts it to kilograms. I still feel it is a bit hacky. The resulting shenanigan is that apart from the proper input: "g", "mg", "Tg", "ng" you can also type "mkg", "μkg", "Mkg" and "pkg" respectively and the calculator will treat them equally. It could be fixed easily with a single line of code, but I decided to leave it as a protest.
 			</p>
 			<h4>K vs °C</h4>
 			<p>
-				The calculator converts between K and °C correctly only in some cases and you should be aware of that. One case where it is fine is the specific heat capacity:
+				The calculator treats K and °C interchangeably. One case where it is fine is the specific heat capacity:
 			</p>
 			<math display="block">
 				<mi>c</mi>
@@ -144,7 +144,7 @@
 					</mrow>
 			</math>
 			<p>
-				In this case the two units are in fact equal. This is because of how the original equation was written. Notice the delta symbol before the T. It means that the equation takes a <em>difference</em> between two temperatures. And because a difference of one kelvin is exactly and by definition equal to one celcius, in this case both units are exchangeable.
+				In this case the two units are in fact equal. This is due to how the original equation was written. Notice the delta symbol before the T. It means that the equation takes a <em>difference</em> between two temperatures. And because a difference of one degree celcius is by definition equal to the difference of one kelvin, in this case, both units are interchangeable.
 			</p>
 			<p>
 				Now take another example, the Boltzmann constant:
@@ -169,45 +169,37 @@
 			</p>
 			<math display="block">
 				<mfrac>
-					<mrow>
-						<mi>J</mi>
-					</mrow>
-					<mrow>
-						<mi>K</mi>
-					</mrow>
+					<mi>J</mi>
+					<mi>K</mi>
 				</mfrac>
 				<mover>
 					<mo>≠</mo>
 					<mo>!</mo>
 				</mover>
 				<mfrac>
-					<mrow>
-						<mi>J</mi>
-					</mrow>
-					<mrow>
-						<mi>°C</mi>
-					</mrow>
+					<mi>J</mi>
+					<mi>°C</mi>
 				</mfrac>
 			</math>
 			<p>
-				Here the two units are not equal. This is because the equation takes the value of temperature. It is not a difference. And because the conversion between K and °C is linear but offset, the two units are not exchangeable.
+				Here the two units are not equal. This is because the equation takes the value of temperature. It is not a difference. And because the conversion between K and °C is linear but offset, the two units are not interchangeable.
 			</p>
 			<p>
-				The calculator does not know the underlying equation. It only sees the unit. It will convert between the two units without any doubts, but you should be aware of the underlying physics.
+				The calculator does not know the underlying equation. It only sees the unit. It will convert between the two units blindly, so you should be aware of the underlying physics.
 			</p>
 			<h4>floating point</h4>
 			<p>
-				The calculator uses floating point numbers. This means that some operations, especially division, may not be exact. The errors appear very far from the decimal point and the numbers are rounded to three decimal places, so you shouldn't notice any errors in the results. Floats also have a limited range, so the calculator will not handle numbers larger than 10<sup>308</sup> or smaller than 10<sup>-308</sup>. You wouldn't notice that, but I'm sure you're scrolling up to try it now.
+				The calculator uses floating point numbers, which have a limited range, so the calculator will not handle numbers larger than 10<sup>308</sup> or smaller than 10<sup>-308</sup>. You wouldn't notice that, but I'm sure you're scrolling up to try it now.
 			</p>
 			<h2>Alternatives</h2>
 			<p>
-				Out of curiosity I checked if there are any other similar tools and they all turn out to be very simple converters or wolfram alpha embeds. The first group lets you compare base or derived units of the same dimension between each other (so they can say that there are 1000 meters in a kilometer) which is increadibely lame and not living up to the cool name of the calculator. 
+				Out of curiosity I checked if there are any other similar tools and they all turn out to be very simple converters or wolfram alpha embeds. The first group lets you compare base or derived units of the same dimension between each other (so they can say that there are 1000 meters in a kilometer) which is incredibly lame for what they claim to be. 
 			</p>
 			<p>
-				The second group of websites includes pages with a single low effort article and a wolfram alpha embed. These websites are also lame, because their makers did not do anything special. Wolfram alpha on the other hand has a very interesting feature. You can list dimensions and it will pick their powers so that they multiply and divide to one. This is very powerful, because you can give it for example <em>acceleration, mass, force</em> and it will come up with F=ma for you.
+				The second group of websites are pages with a single low effort article and a wolfram alpha embed. These websites are also lame, because their makers did not do anything special. Wolfram alpha on the other hand has a very interesting feature. You can give it a list of dimensions and it will pick their powers so that they multiply and divide to one. This is very powerful, because you can give it for example <em>acceleration, mass, force</em> and it will come up with F=ma for you.
 			</p>
 			<p>
-				Comparing wolfram alpha to this site, it can also guess the derived unit given the definition. So you can enter kg*m/s^2 and it will correctly recognize it's a newton. But if you throw anything more complex, it will give up. (Example: kg^2 * m^4 / s^7 * A^4 - wolfram doesn't do anything, while this site simplifies it to Ω/F). Another advantage of this site over wolfram is that it has live preview of the input and the result. It is also open-source and free.
+				Comparing wolfram alpha to this site, it can also guess the derived unit given the definition. So you can enter kg*m/s^2 and it will correctly recognize it's a newton. But if you throw anything more complex at it, it will give up. (Example: kg^2 * m^4 / s^7 * A^4 - wolfram doesn't do anything, while this site simplifies it to Ω/F). Another advantage of this site over wolfram is that it has live preview of the input and the result. It is also open-source and free.
 			</p>
 
 			<div id="hidden-text">
@@ -216,10 +208,10 @@
 				<div id="hidden-text-blur">
 					<h2>The CCC system of measurement</h2>
 					<p>
-						Congrats! You found the button! Now you can convert any SI unit to CCC and back!
+						Congrats! You found the button! Now you can convert any SI unit to CCC and back.
 					</p>
 					<p>
-						The system's name stands for c, calorie, C<sub>4</sub>. It is a joke system made by <a href="https://www.youtube.com/watch?v=KmfdeWd0RMk">jan Misali</a> that only includes units that begin with the letter C. To cover all the units possible to express by SI, the author decided to use the following system, also called "The Seven C's":
+						The system's name stands for c, calorie, C<sub>4</sub>. It is a joke system made by <a href="https://www.youtube.com/watch?v=KmfdeWd0RMk">jan Misali</a> that only includes units that begin with the letter C. To cover all units possible to express with SI, the author decided to use the following system, also called "The Seven C's":
 					</p>
 					<table>
 						<tr>
@@ -287,6 +279,15 @@
 									<mi>A</mi>
 									<mo>·</mo>
 									<mi>s</mi>
+								</math>
+							</td>
+						</tr>
+						<tr>
+							<td>cd</td>
+							<td>candela</td>
+							<td>
+								<math display="block">
+									<mi>cd</mi>
 								</math>
 							</td>
 						</tr>
@@ -362,7 +363,7 @@
 					</table>
 
 					<p>
-						It is worth noting that originally jan Misali used the roman numeral <span style="font-family: 'Times New Roman', Times, serif;">C</span> for the unit cent, but I decided it could be confused with coulomb on some devices (small display / weird font), so I used the word cent instead.
+						It is worth noting that originally jan Misali used the roman numeral <span style="font-family: 'Times New Roman', Times, serif;">C</span> for the unit cent, but I decided it could be confused with coulomb on some devices (small display / weird font), so I used the word cent instead. It could also be hard to type, especially on keyboards manufactured after the fall of the Roman Empire.
 					</p>
 				</div>
 				<div id="hidden-text-explainer">

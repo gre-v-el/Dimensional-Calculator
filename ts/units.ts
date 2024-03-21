@@ -360,7 +360,6 @@ let UNITS: Units = {
 				rad: 0,
 				sr: 0
 			},
-			ccc_mult: 1
 		},
 		{
 			symbol: "con",
