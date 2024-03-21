@@ -1,12 +1,10 @@
 "use strict";
 function is_basic_unit(u, ccc_enabled) {
-    if (ccc_enabled === void 0) { ccc_enabled = false; }
     return UNITS.SI.includes(u) ||
         UNITS.derived.some(function (d) { return d.symbol == u && (d.ccc_mult == undefined || ccc_enabled); }) ||
         u == "g";
 }
 function is_unit_good(u, ccc_enabled) {
-    if (ccc_enabled === void 0) { ccc_enabled = false; }
     if (is_basic_unit(u, ccc_enabled) || !isNaN(Number(u)))
         return true;
     for (var _i = 0, _a = UNITS.prefixes; _i < _a.length; _i++) {

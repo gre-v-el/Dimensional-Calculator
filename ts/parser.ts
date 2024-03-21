@@ -1,10 +1,10 @@
-function is_basic_unit(u: string, ccc_enabled: boolean = false): boolean {
+function is_basic_unit(u: string, ccc_enabled: boolean): boolean {
 	return UNITS.SI.includes(u) ||
            UNITS.derived.some((d) => d.symbol == u && (d.ccc_mult == undefined || ccc_enabled)) ||
 		   u == "g";
 }
 
-function is_unit_good(u: string, ccc_enabled: boolean = false): boolean {
+function is_unit_good(u: string, ccc_enabled: boolean): boolean {
 	if(is_basic_unit(u, ccc_enabled) || !isNaN(Number(u))) return true;
 
 	for(let p of UNITS.prefixes) {

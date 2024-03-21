@@ -50,6 +50,8 @@ c_letter.addEventListener("click", function () {
         document.getElementById("secret").style.display = "none";
         document.getElementById("seven-cs-result").style.scale = "1 1";
         document.getElementById("hidden-header").style.opacity = "1";
+        document.getElementById("hidden-text-blur").id = "";
+        document.getElementById("hidden-text-explainer").style.display = "none";
         c_background.style.transition = "scale 2s linear";
         c_background.style.scale = "50";
         document.body.style.backgroundColor = "#e28f29";

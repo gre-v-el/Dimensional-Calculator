@@ -26,13 +26,13 @@ function fract_to_unit(fract: Fraction): Unit {
 
 	// split prefixes
 	for(let u of merged) {
-		if(is_basic_unit(u.v)) continue;
+		if(is_basic_unit(u.v, true)) continue;
 
 		for(let p of UNITS.prefixes) {
 			if(!u.v.startsWith(p.symbol)) continue;
 
 			let candidate = u.v.substring(p.symbol.length);
-			if(is_basic_unit(candidate)) {
+			if(is_basic_unit(candidate, true)) {
 				u.v = candidate;
 				mult *= 10 ** (p.exponent * u.p);
 			}
@@ -143,6 +143,8 @@ function reduce_unit_greedy(unit: Unit): Unit {
 		let best_dist = heuristic(unit);
 
 		for(let compound of UNITS.derived) {
+			if(compound.ccc_mult != undefined) continue;
+			
 			for(let power of [-1, 1]) {
 				let extracted = extract(unit, compound, power);
 				let score = heuristic(extracted);

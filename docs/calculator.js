@@ -32,14 +32,14 @@ function fract_to_unit(fract) {
     // split prefixes
     for (var _e = 0, merged_1 = merged; _e < merged_1.length; _e++) {
         var u_4 = merged_1[_e];
-        if (is_basic_unit(u_4.v))
+        if (is_basic_unit(u_4.v, true))
             continue;
         for (var _f = 0, _g = UNITS.prefixes; _f < _g.length; _f++) {
             var p = _g[_f];
             if (!u_4.v.startsWith(p.symbol))
                 continue;
             var candidate = u_4.v.substring(p.symbol.length);
-            if (is_basic_unit(candidate)) {
+            if (is_basic_unit(candidate, true)) {
                 u_4.v = candidate;
                 mult *= Math.pow(10, (p.exponent * u_4.p));
             }
@@ -151,6 +151,8 @@ function reduce_unit_greedy(unit) {
         var best_dist = heuristic(unit);
         for (var _i = 0, _a = UNITS.derived; _i < _a.length; _i++) {
             var compound = _a[_i];
+            if (compound.ccc_mult != undefined)
+                continue;
             for (var _b = 0, _c = [-1, 1]; _b < _c.length; _b++) {
                 var power = _c[_b];
                 var extracted = extract(unit, compound, power);

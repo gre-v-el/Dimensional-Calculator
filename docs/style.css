@@ -75,15 +75,23 @@ footer {
 	align-items: center;
 }
 
-.horizontal p {
+.horizontal > p {
 	flex: 2;
 	text-align: right;
 }
 
-.horizontal math {
+.horizontal > math {
 	flex: 3;
 	transition: opacity 0.2s;
 }
+
+.horizontal > div {
+	flex: 1;
+}
+
+
+
+
 
 hr {
 	border-color: #0003;
@@ -189,4 +197,68 @@ header h1 {
 	transition: opacity 1s;	
 	position: relative;
 	z-index: 10;
+}
+
+article {
+	width: calc( min(900px, 100vw - 100px) );
+	margin: auto;
+	line-height: 1.3em;
+	font-size: 1.15em;
+}
+
+article a {
+	color: #e28f29;
+}
+
+article a:hover {
+	color: #b47220;
+}
+
+h2, h4 {
+	margin-block-end: 0;
+	margin-inline-end: 0;
+}
+
+#hidden-text-blur {
+	filter: blur(10px);
+	-webkit-filter: blur(10px);
+	-webkit-touch-callout: none;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+}
+
+#hidden-text table {
+	margin: auto;
+	border-collapse: collapse;
+}
+
+#hidden-text table th {
+	background-color: #0001;
+}
+
+#hidden-text table td, table th {
+	border: 1px solid #0005;
+	padding: 4px;
+	text-align: center;
+}
+
+#hidden-text {
+	position: relative;
+}
+
+#hidden-text-explainer {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	box-sizing: border-box;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	font-size: 1.5em;
+	text-shadow: 0 0 5px #fff;
 }
