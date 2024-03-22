@@ -19,7 +19,7 @@
     </header>
     <section class="container">
 		<div class="input-container">
-			<input type="text" class="input-field" id="input" placeholder="Enter a unit..." value="kg*mm / s^2" autocomplete="off">
+			<input type="text" class="input-field" id="input" placeholder="Enter a unit..." value="N / mm^2" autocomplete="off">
 			<span id="error-message"></span>
 		
 			<hr>
@@ -78,10 +78,10 @@
 
 			<h2>Features</h2>
 			<ul>
-				<li>Accepts all basic and derived SI units.</li>
+				<li>Accepts all base and derived SI units.</li>
 				<li>Accepts all SI prefixes.</li>
-				<li>Accepts some "untypable" characters, like "ohm" → Ω, "micro" → µ and "deg" →&nbsp;&deg;</li>
-				<li>Handles and underlines errors.</li>
+				<li>Accepts some "untypable" characters, like "ohm" → Ω and "micro" → µ</li>
+				<li>Underlines errors.</li>
 			</ul>
 
 			<h2>Shenanigans and gimmicks</h2>
@@ -89,16 +89,6 @@
 			<p>
 				Technically, rad and sr are defined as <math><mfrac><mi>m</mi><mi>m</mi></mfrac></math>
 				and <math><mfrac><msup><mi>m</mi><mn>2</mn></msup><msup><mi>m</mi><mn>2</mn></msup></mfrac></math> respectively. This means that they are dimensionless, but they are still treated as units in this calculator. If they were treated as they are defined, they would be simplified to 1, which would be misleading.
-			</p>
-			<h4>μkg?!?!</h4>
-			<p>
-				The next shenanigan will require a bit of an introduction, so bear with me:
-			</p>
-			<p>
-				The unit kg is the worst thing there is in the metric system. Think what is compelling in SI? Why did nearly all countries switch to it a few hundred years ago, rejecting other imperial-like systmes? It is the simplicty. Each metric unit has a simple conversion to any other. There are no multipliers like 12 or 5280. Everything is a power of 10. SI has to be simple.
-			</p>
-			<p>
-				And then there is the kilogram. The only SI unit that includes a prefix. This fact introduced complications to this calculator. The algorithm actually first treats SI as having the gram as the base unit, and then converts it to kilograms. I still feel it is a bit hacky. The resulting shenanigan is that apart from the proper input: "g", "mg", "Tg", "ng" you can also type "mkg", "μkg", "Mkg" and "pkg" respectively and the calculator will treat them equally. It could be fixed easily with a single line of code, but I decided to leave it as a protest.
 			</p>
 			<h4>K vs °C</h4>
 			<p>
@@ -187,13 +177,23 @@
 			<p>
 				The calculator does not know the underlying equation. It only sees the unit. It will convert between the two units blindly, so you should be aware of the underlying physics.
 			</p>
+			<h4>μkg?!?!</h4>
+			<p>
+				The next shenanigan will require a bit of an introduction, so bear with me:
+			</p>
+			<p>
+				The unit kg is the worst thing there is in the metric system. Think what is compelling in SI? Why did nearly all countries switch to it a few hundred years ago, rejecting other imperial-like systmes? It is the simplicty. Each metric unit has a simple conversion to any other. There are no multipliers like 12 or 5280. Everything is a power of 10. SI has to be simple.
+			</p>
+			<p>
+				And then there is the kilogram. The only SI unit that includes a prefix. This fact introduced complications to this calculator. The algorithm actually first treats SI as having the gram as the base unit, and then converts it to kilograms. I still feel it is a bit hacky. The resulting shenanigan is that apart from the proper input: "g", "mg", "Tg", "ng" you can also type "mkg", "μkg", "Mkg" and "pkg" respectively and the calculator will treat them equally. It could be fixed easily with a single line of code, but I decided to leave it as a protest.
+			</p>
 			<h4>floating point</h4>
 			<p>
 				The calculator uses floating point numbers, which have a limited range, so the calculator will not handle numbers larger than 10<sup>308</sup> or smaller than 10<sup>-308</sup>. You wouldn't notice that, but I'm sure you're scrolling up to try it now.
 			</p>
 			<h2>Alternatives</h2>
 			<p>
-				Out of curiosity I checked if there are any other similar tools and they all turn out to be very simple converters or wolfram alpha embeds. The first group lets you compare base or derived units of the same dimension between each other (so they can say that there are 1000 meters in a kilometer) which is incredibly lame for what they claim to be. 
+				Out of curiosity I checked if there are any other tools online named "dimensional analysis calculator" and they all turn out to be very simple converters or wolfram alpha embeds. The first group lets you compare base or derived units of the same dimension between each other (so they can say that there are 1000 meters in a kilometer) which is incredibly lame for what they claim to be. 
 			</p>
 			<p>
 				The second group of websites are pages with a single low effort article and a wolfram alpha embed. These websites are also lame, because their makers did not do anything special. Wolfram alpha on the other hand has a very interesting feature. You can give it a list of dimensions and it will pick their powers so that they multiply and divide to one. This is very powerful, because you can give it for example <em>acceleration, mass, force</em> and it will come up with F=ma for you.
@@ -248,13 +248,17 @@
 							</td>
 						</tr>
 						<tr>
-							<td>C4</td>
-							<td>the musical note C4</td>
+							<td>C<sub>4</sub></td>
+							<td>the musical note C<sub>4</sub></td>
 							<td>
 								<math display="block">
 									<mi>220</mi>
 									<mroot><mn>2</mn><mn>4</mn></mroot>
 									<mi>Hz</mi>
+									<mo>=</mo>
+									<mi>220</mi>
+									<mroot><mn>2</mn><mn>4</mn></mroot>
+									<mfrac><mn>1</mn><mi>s</mi></mfrac>
 								</math>
 							</td>
 						</tr>
@@ -385,7 +389,7 @@
 	</section>
     <footer>
 		<p>
-			<span style="font-size: 1.3em;">&copy;</span>oded by <a href="https://gre-v-el.github.io/portfolio">Gabriel Myszkier</a>
+			<span style="font-size: 1.3em;" id="wrong-c">&copy;</span>oded by <a href="https://gre-v-el.github.io/portfolio">Gabriel Myszkier</a>
 		</p>
 		<p>
 			This website is open source. Star it on github!
@@ -394,9 +398,3 @@
     </script>
 </body>
 </html>
-
-<!--
-	TODO:
-	alternative units
-	equivalents
--->

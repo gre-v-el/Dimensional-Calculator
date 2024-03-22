@@ -13,6 +13,7 @@ var __assign = (this && this.__assign) || function () {
 var c_clicks = 0;
 var c_letter = document.getElementById("c-letter");
 var c_background = c_letter.children[0];
+var wrong_c = document.getElementById("wrong-c");
 var input_box = document.getElementById("input");
 var error_span = document.getElementById("error-message");
 var math_input = document.getElementById("math-input");
@@ -64,4 +65,7 @@ c_letter.addEventListener("click", function () {
         c_letter.id = "c-clicked";
         c_background.style.scale = Math.pow(1.4, c_clicks + 1).toString();
     }
+});
+wrong_c.addEventListener("click", function () {
+    alert("Not this one");
 });

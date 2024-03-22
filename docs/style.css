@@ -262,3 +262,9 @@ h2, h4 {
 	font-size: 1.5em;
 	text-shadow: 0 0 5px #fff;
 }
+
+.result-section math {
+	overflow-x: auto;
+	overflow-y: hidden;
+	padding: 5px;
+}

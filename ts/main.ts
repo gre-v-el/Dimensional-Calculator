@@ -1,6 +1,7 @@
 let c_clicks = 0;
 let c_letter = <HTMLSpanElement>document.getElementById("c-letter")!;
 let c_background = c_letter.children[0] as HTMLDivElement;
+let wrong_c = <HTMLDivElement>document.getElementById("wrong-c")!;
 
 let input_box = <HTMLInputElement>document.getElementById("input")!;
 let error_span = <HTMLSpanElement>document.getElementById("error-message")!;
@@ -64,4 +65,8 @@ c_letter.addEventListener("click", () => {
 		c_letter.id = "c-clicked";
 		c_background.style.scale = Math.pow(1.4, c_clicks + 1).toString();
 	}
+});
+
+wrong_c.addEventListener("click", () => {
+	alert("Not this one");
 });
