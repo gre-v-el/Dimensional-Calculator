@@ -117,8 +117,9 @@ header h1 {
 	cursor: pointer;
 }
 
-#c-letter div, #c-clicked div {
+#c-letter span, #c-clicked span {
 	position: absolute;
+	display: block;
 
 	top: 0;
 	left: 0;
@@ -135,7 +136,7 @@ header h1 {
 	animation: infinite spin 20s linear;
 }
 
-#c-letter:hover div, #c-clicked div{
+#c-letter:hover span, #c-clicked span{
 	opacity: 1;
 }
 

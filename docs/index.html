@@ -1,9 +1,10 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Dimensional Analysis Calculator</title>
-	<meta name="description" content="A tool to express any compound unit as pure SI units and to simplify it as much as possible.">
+	<meta name="description" content="This tool accepts a unit and expands it into its base SI units. It then simplifies it to the simplest form. It is very useful for checking the correctness of your calculations, especially in physics and engineering.">
 
 	<link rel="stylesheet" type="text/css" href="style.css">
 	<script src="units.js" defer></script>
@@ -14,10 +15,10 @@
 </head>
 <body>
     <header>
-        <h1>Dimensional Analysis <span style="display: inline-block;"><span id="c-letter">C<div></div></span>alculator</span></h1>
+        <h1>Dimensional Analysis <span style="display: inline-block;"><span id="c-letter">C<span></span></span>alculator</span></h1>
 		<h3 id="hidden-header">With the CCC system</h3>
     </header>
-    <section class="container">
+    <div class="container">
 		<div class="input-container">
 			<input type="text" class="input-field" id="input" placeholder="Enter a unit..." value="N / mm^2" autocomplete="off">
 			<span id="error-message"></span>
@@ -66,7 +67,7 @@
 				<math>
 					<mfrac>
 						<mrow>
-							<mi>kg</mi><mo>·</mo><mi>m</mi>
+							<mi>kg</mi><mo>&centerdot;</mo><mi>m</mi>
 						</mrow>
 						<mrow>
 							<msup><mi>s</mi><mn>2</mn></msup>
@@ -80,7 +81,7 @@
 			<ul>
 				<li>Accepts all base and derived SI units.</li>
 				<li>Accepts all SI prefixes.</li>
-				<li>Accepts some "untypable" characters, like "ohm" → Ω and "micro" → µ</li>
+				<li>Accepts some "untypable" characters, like "ohm" → &Omega; and "micro" → &micro;</li>
 				<li>Underlines errors.</li>
 			</ul>
 
@@ -90,9 +91,9 @@
 				Technically, rad and sr are defined as <math><mfrac><mi>m</mi><mi>m</mi></mfrac></math>
 				and <math><mfrac><msup><mi>m</mi><mn>2</mn></msup><msup><mi>m</mi><mn>2</mn></msup></mfrac></math> respectively. This means that they are dimensionless, but they are still treated as units in this calculator. If they were treated as they are defined, they would be simplified to 1, which would be misleading.
 			</p>
-			<h4>K vs °C</h4>
+			<h4>K vs &deg;C</h4>
 			<p>
-				The calculator treats K and °C interchangeably. One case where it is fine is the specific heat capacity:
+				The calculator treats K and &deg;C interchangeably. One case where it is fine is the specific heat capacity:
 			</p>
 			<math display="block">
 				<mi>c</mi>
@@ -103,7 +104,7 @@
 					</mrow>
 					<mrow>
 						<mi>m</mi>
-						<mo>·</mo>
+						<mo>&centerdot;</mo>
 						<mi>ΔT</mi>
 					</mrow>
 				</mfrac>
@@ -118,7 +119,7 @@
 					</mrow>
 					<mrow>
 						<mi>kg</mi>
-						<mo>·</mo>
+						<mo>&centerdot;</mo>
 						<mi>K</mi>
 					</mrow>
 				</mfrac>
@@ -129,9 +130,10 @@
 					</mrow>
 					<mrow>
 						<mi>kg</mi>
-						<mo>·</mo>
-						<mi>°C</mi>
+						<mo>&centerdot;</mo>
+						<mi>&deg;C</mi>
 					</mrow>
+				</mfrac>
 			</math>
 			<p>
 				In this case the two units are in fact equal. This is due to how the original equation was written. Notice the delta symbol before the T. It means that the equation takes a <em>difference</em> between two temperatures. And because a difference of one degree celcius is by definition equal to the difference of one kelvin, in this case, both units are interchangeable.
@@ -168,11 +170,11 @@
 				</mover>
 				<mfrac>
 					<mi>J</mi>
-					<mi>°C</mi>
+					<mi>&deg;C</mi>
 				</mfrac>
 			</math>
 			<p>
-				Here the two units are not equal. This is because the equation takes the value of temperature. It is not a difference. And because the conversion between K and °C is linear but offset, the two units are not interchangeable.
+				Here the two units are not equal. This is because the equation takes the value of temperature. It is not a difference. And because the conversion between K and &deg;C is linear but offset, the two units are not interchangeable.
 			</p>
 			<p>
 				The calculator does not know the underlying equation. It only sees the unit. It will convert between the two units blindly, so you should be aware of the underlying physics.
@@ -240,7 +242,7 @@
 									<mfrac>
 										<mrow>
 											<mi>kg</mi>
-											<mo>·</mo>
+											<mo>&centerdot;</mo>
 											<msup><mi>m</mi><mn>2</mn></msup>
 										</mrow>
 										<msup><mi>s</mi><mn>2</mn></msup></mfrac>
@@ -281,7 +283,7 @@
 									<mi>C</mi>
 									<mo>=</mo>
 									<mi>A</mi>
-									<mo>·</mo>
+									<mo>&centerdot;</mo>
 									<mi>s</mi>
 								</math>
 							</td>
@@ -302,7 +304,7 @@
 								<math display="block">
 									<mo>~</mo>
 									<mn>1.66</mn>
-									<mo>·</mo>
+									<mo>&centerdot;</mo>
 									<msup>
 										<mn>10</mn>
 										<mn>-22</mn>
@@ -386,7 +388,7 @@
 				↑ Click the C seven times.
 			</div>
 		</div>
-	</section>
+	</div>
     <footer>
 		<p>
 			<span style="font-size: 1.3em;" id="wrong-c">&copy;</span>oded by <a href="https://gre-v-el.github.io/portfolio">Gabriel Myszkier</a>
@@ -395,6 +397,5 @@
 			This website is open source. Star it on github!
 		</p>
 	</footer>
-    </script>
 </body>
 </html>
