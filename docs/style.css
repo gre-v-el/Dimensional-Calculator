@@ -233,6 +233,7 @@ h2, h4 {
 
 .table-wrapper {
 	overflow-x: auto;
+	overflow-y: hidden;
 }
 
 #hidden-text table {
