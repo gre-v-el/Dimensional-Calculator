@@ -231,6 +231,10 @@ h2, h4 {
 	user-select: none;
 }
 
+.table-wrapper {
+	overflow-x: auto;
+}
+
 #hidden-text table {
 	margin: auto;
 	border-collapse: collapse;
